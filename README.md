@@ -9,6 +9,10 @@ Supported Output Codecs: PCM (WAV)
                          E-AC3 (UNSIGNED)
                          AAC
 
+NEEDED 3RD PARTY TOOLS MUST BE DOWNLOAD HERE:
+
+[<img src="https://i.ibb.co/CzHqWx9/MEGA.png">](https://mega.nz/folder/NhdS3aTD#W97ktr4bpBkUbB5c2WOxqw)
+
 
 # FS_Audio_Converter_Options.cmd
 
@@ -77,8 +81,11 @@ Usage:                          Open a file/container with this script (FS_Audio
 -Delay                        = You can set a Delay in ms for output file. For negative delay use -x ms.
 
 -Amplify                      = Set Amplify of target file. For negative Amplify use -x dB. You can also use some pre defined options:
+
                                 ORIGINAL - No changes (will be set if Amplify is set to 0).
+                                
                                 DIALNORM -31dB - Analysing dialnorm in file and raise volume x dB till dialnorm -31dB is reached.
+                                
                                 NORMALIZED - raised volume till highest peak reaches -1dB.
                                 
 -Save Settings                = Saves all settings. This is helpful for TV-shows, if u must encode many files with same settings.
