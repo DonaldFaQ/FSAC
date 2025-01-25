@@ -1,0 +1,51 @@
+FS Audio Converter [Team QfG] v0.68 beta
+
+v0.68
+- Updated MediaInfo.
+- Updated eac3to
+- Updated FFMPEG
+- THD+AC3 Support
+
+v0.67.9
+- Fixed Sourcefolder string if no *.ini file exists.
+- Fixed Tempfolder string if no *.ini file exists.
+
+v0.67.8
+- Fixed Dialnorm Bug with Atmos decoding.
+
+v0.67.7
+- Fixed Dialnorm Bug if Dialnorm not found (no more 31dB Amplify).
+- FFMPEG now creates a index file for better performance if using Avisynth operations.
+
+v0.67.6
+- Fixed no working dialnorm analysing with container files.
+- Temp folder now uses subfolders so that the major temp folder will not be deleted.
+  Also bug fixed during encode in parallel mode the first ready encode delete temp files from other encodes.
+- No more files in the windows temp dir, all temporally files now in the tool temp dir.
+- Update eac3to 3.45
+
+v0.67.5
+- Added Atmos 7.1.2 Layout (check if 7.1.2 is SIDE or FRONT Layout). For Front Layout rename [TSL][TSR] files.
+- Added Container for LPCM demuxing can be set in options (WAV/CAF).
+
+v0.67.4b
+- Fixed Output Folder Bug.
+
+v0.67.4
+- Added Atmos Mono Wavs Nameset option.
+- Minor bugfixes.
+
+v0.67.3
+- Fixed wrong Channel Layouts during Atmos demuxing.
+
+v0.67.2
+- Bitrate for Atmos demuxing can now set separatly in options.
+- NORMALIZE - changed max Volume from 0dB to -1dB
+- Update eac3to_mod 3.41
+- Minor bugfixes.
+
+v0.67
+- Complete overhaul.
+
+Download newest version:
+https://mega.nz/folder/hwF1SJyC#UajU9fy_QAiPJCpYwE2KNQ
