@@ -9,9 +9,9 @@ Supported Output Codecs: PCM (WAV)
                          E-AC3 (UNSIGNED)
                          AAC
 
-==============================
-FS_Audio_Converter_Options.cmd
-==============================
+
+# FS_Audio_Converter_Options.cmd
+
 Options script for settings.
 ------------------------------
 
@@ -39,9 +39,9 @@ Options script for settings.
 -Create Shell Extensions      = Create Shell Extensions for right click menu of a file.
                                 WITH ACTIVATED UAC START THE SCRIPT AS ADMINISTRATOR OTHERWHISE THE REGISTRY SETTINGS CANNOT BE WRITE!
 
-======================
-FS_Audio_Converter.cmd
-======================
+
+# FS_Audio_Converter.cmd
+
 Mainscript.
 ----------------------
 
