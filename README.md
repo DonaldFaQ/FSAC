@@ -2,12 +2,19 @@
 
 FS Audio Converter is a FrameServer based CLI Tool for audio encoding. You need an installed Avisynth+ Frameserver for using this tool.
 Encoding engine is FFMPEG (for Atmos files Dolby Reference Player + FFMPEG). 
-Supported Output Codecs: PCM (WAV)
-                         LPCM (WAVE 64 / CAF)
-                         FLAC
-                         AC3
-                         E-AC3 (UNSIGNED)
-                         AAC
+Supported Output Codecs: 
+
+PCM (WAV)
+
+LPCM (WAVE 64 / CAF)
+                         
+FLAC
+
+AC3
+
+E-AC3 (UNSIGNED)
+
+AAC
 
 NEEDED 3RD PARTY TOOLS MUST BE DOWNLOAD HERE:
 
