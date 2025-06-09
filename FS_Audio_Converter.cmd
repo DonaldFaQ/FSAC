@@ -1276,7 +1276,7 @@ if "%Pitch_NAME%"=="NO" set "Pitch=rate"
 IF "%Tempo_NAME%"=="ORIGINAL" set "Pitch=pitch"
 
 if "%codec_out_NAME%"=="FLAC" (
-	set "codec_out=flac -af aformat=s!FLACBR!"
+	set "codec_out=flac"
 	set "codec_ext=flac"
 )
 if "%codec_out_NAME%"=="Mono WAVs [ATMOS]" (
@@ -1428,7 +1428,10 @@ if "!THDAC3!"=="TRUE" (
 ) else (
 	echo LWLibavAudioSource^("!SOURCEFILE!", %DRC_SCALE%cachefile="!TEMP_FOLDER!\%Password%.lwi", stream_index=%TRACK%^)>>"!AVSFILE!"
 )
-
+if "%codec_out_NAME%"=="FLAC" (
+	echo # [Force Bitdepth to !FLACBR!-Bit]>>"!AVSFILE!"
+	echo ConvertAudioTo!FLACBR!bit^(^)>>"!AVSFILE!"
+)
 if "%SAMPLE_RATE%" NEQ "ORIGINAL" call :AVSCRIPT_SAMPLERATE
 if "%DELAY%" NEQ "0" call :AVSCRIPT_DELAY
 if "%AMPLIFY%" NEQ "0" call :AVSCRIPT_AMPLIFY
