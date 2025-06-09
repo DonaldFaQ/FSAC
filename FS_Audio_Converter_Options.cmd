@@ -1,18 +1,18 @@
 @echo off & setlocal
 mode con cols=200 lines=60
-TITLE  FS Audio Converter Options [Team QfG] v0.68 beta
+TITLE  FS Audio Converter Options [Team QfG] v0.69 beta
 setlocal EnableDelayedExpansion
 
 rem --- Hardcoded settings. Can be changed manually ---
 set "sfkpath=%~dp0tools\sfk.exe" rem Path to sfk.exe
 
-rem --- Hardcoded settings. Cannot be changed ---
-
 :PREFETCH
+rem --- Hardcoded settings. Cannot be changed ---
 set "TARGET_FOLDER=SAME AS SOURCE"
 set "TEMP_FOLDER=%~dp0temp"
 set "DRP_FOLDER=!ProgramFiles!\Dolby\Dolby Reference Player"
 SET "MONOWAVSLAYOUT=Standard"
+set "FLACBR=24"
 set "WAVBR=16"
 set "THDBR=24"
 set "WAVBRAUTO=FALSE"
@@ -83,6 +83,10 @@ IF EXIST "%~dp0FS_Audio_Converter_Options.ini" (
 	FOR /F "delims=" %%A IN ('findstr /C:"WAVs_LAYOUT=" "%~dp0FS_Audio_Converter_Options.ini"') DO (
 		set "MONOWAVSLAYOUT=%%A"
 		set "MONOWAVSLAYOUT=!MONOWAVSLAYOUT:~12!"
+	)
+	FOR /F "delims=" %%A IN ('findstr /C:"FLAC=" "%~dp0FS_Audio_Converter_Options.ini"') DO (
+		set "FLACBR=%%A"
+		set "FLACBR=!FLACBR:~5!"
 	)
 	FOR /F "delims=" %%A IN ('findstr /C:"WAV=" "%~dp0FS_Audio_Converter_Options.ini"') DO (
 		set "WAVBR=%%A"
@@ -183,6 +187,7 @@ echo == BITRATES ===============================================================
 echo.
 %YELLOW%
 call :colortxt 0E "WAV                    = !WAVBR_TEXT!-Bit / Auto Bitdepth [" & call :!WAVBRAUTO_TEXT! & call :colortxt 0E "]" /n
+echo FLAC                   = !FLACBR!-Bit
 echo THD Atmos              = !THDBR!-Bit
 echo AC-3                   = !AC3BR! k^/bs
 echo eAC-3                  = !eAC3BR! k^/bs
@@ -240,6 +245,7 @@ if errorlevel 10 (
 	echo SHORTFILENAMES=!SHORTFILENAMES!>>"%~dp0FS_Audio_Converter_Options.ini"
 	echo LOGFILE=!LOGFILE!>>"%~dp0FS_Audio_Converter_Options.ini"
 	echo WAVs_LAYOUT=^%MONOWAVSLAYOUT%>>"%~dp0FS_Audio_Converter_Options.ini"
+	echo FLAC=^%FLACBR%>>"%~dp0FS_Audio_Converter_Options.ini"
 	echo WAV=^%WAVBR%>>"%~dp0FS_Audio_Converter_Options.ini"
 	echo THD=^%THDBR%>>"%~dp0FS_Audio_Converter_Options.ini"
 	echo eAC3=^%eAC3BR%>>"%~dp0FS_Audio_Converter_Options.ini"
@@ -354,6 +360,7 @@ echo == BITRATES ===============================================================
 echo.
 %YELLOW%
 call :colortxt 0E "WAV                    = !WAVBR_TEXT!-Bit / Auto Bitdepth [" & call :!WAVBRAUTO_TEXT! & call :colortxt 0E "]" /n
+echo FLAC                   = !FLACBR!-Bit
 echo THD Atmos              = !THDBR!-Bit
 echo AC-3                   = !AC3BR! k^/bs
 echo eAC-3                  = !eAC3BR! k^/bs
@@ -364,10 +371,11 @@ echo == BITRATES MENU ==========================================================
 echo.
 %YELLOW%
 echo 1. Set WAV Bitdepth ^/ Auto Bitdepth
-echo 2. Set THD Atmos Bitrate
-echo 3. Set AC-3 Bitrate
-echo 4. Set eAC-3 Bitrate
-echo 5. Set AAC VBR QL
+echo 2. Set FLAC Bitrate
+echo 3. Set THD Atmos Bitrate
+echo 4. Set AC-3 Bitrate
+echo 5. Set eAC-3 Bitrate
+echo 6. Set AAC VBR QL
 echo.
 %GREEN%
 echo S. SAVE SETTINGS AND EXIT
@@ -375,16 +383,16 @@ echo E. EXIT WITHOUT SAVING
 echo.
 %WHITE%
 echo Change Settings and Press [S]AVE or [E]XIT WITHOUT SAVE.
-CHOICE /C 12345SE /N /M "Select a Letter 1,2,3,4,5,[S]AVE,[E]XIT"
+CHOICE /C 123456SE /N /M "Select a Letter 1,2,3,4,5,6,[S]AVE,[E]XIT"
 
-if errorlevel 7 (
+if errorlevel 8 (
 	echo.
 	%RED%
 	echo Exit without saving.
 	%WAIT% 2000
 	goto PREFETCH
 )
-if errorlevel 6 (
+if errorlevel 7 (
 	echo          FS AUDIO CONVERTER OPTIONS CONFIG File.>"%~dp0FS_Audio_Converter_Options.ini"
 	echo ---------------------------------------------------------->>"%~dp0FS_Audio_Converter_Options.ini"
 	echo TARGET Folder=!TARGET_FOLDER!>>"%~dp0FS_Audio_Converter_Options.ini"
@@ -410,7 +418,7 @@ if errorlevel 6 (
 	%WAIT% 2000
 	goto MAINMENU
 )
-if errorlevel 5 (
+if errorlevel 6 (
 	%YELLOW%
 	echo.
 	echo Set the VBR QL in steps 1 ^(lowest^) till 5 ^(highest^). ^(1,2,3,4,5^).
@@ -419,7 +427,7 @@ if errorlevel 5 (
 	echo.
 	set /p "AACBR=Type in VBR QL and press [ENTER]:" || SET "AACBR=!AACBR!"
 )
-if errorlevel 4 (
+if errorlevel 5 (
 	%YELLOW%
 	echo.
 	echo Set the Bitrate in k^/bit ^(32-6144^).
@@ -428,7 +436,7 @@ if errorlevel 4 (
 	echo.
 	set /p "eAC3BR=Type in Bitrate and press [ENTER]:" || SET "eAC3BR=!eAC3BR!"
 )
-if errorlevel 3 (
+if errorlevel 4 (
 	%YELLOW%
 	echo.
 	echo Set the Bitrate in k^/bit ^(32-640^).
@@ -437,7 +445,7 @@ if errorlevel 3 (
 	echo.
 	set /p "AC3BR=Type in Bitrate and press [ENTER]:" || SET "AC3BR=!AC3BR!"
 )
-if errorlevel 2 (
+if errorlevel 3 (
 	%YELLOW%
 	echo.
 	echo Set the Bitdepth in BIT ^(16,24,32^).
@@ -445,6 +453,15 @@ if errorlevel 2 (
 	%WHITE%
 	echo.
 	set /p "THDBR=Type in Bitdepth and press [ENTER]:" || SET "THDBR=!THDBR!"
+)
+if errorlevel 2 (
+	%YELLOW%
+	echo.
+	echo Set the Bitdepth in BIT ^(16,24,32^).
+	echo Don't forget to [S]AVE your settings after editing^^!
+	%WHITE%
+	echo.
+	set /p "FLACBR=Type in Bitdepth and press [ENTER]:" || SET "FLACBR=!FLACBR!"
 )
 if errorlevel 1 (
 	%YELLOW%

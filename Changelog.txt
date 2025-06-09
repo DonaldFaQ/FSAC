@@ -1,4 +1,8 @@
-FS Audio Converter [Team QfG] v0.68 beta
+FS Audio Converter [Team QfG] v0.69 beta
+
+v0.69
+- FLAC Encoding supports Bitrate (16,24,32*) *Only with FFMPEG 7x.
+- Rollback to FFMPEG 6.0 (Better Support for Atmos Decoding).
 
 v0.68
 - Updated MediaInfo.

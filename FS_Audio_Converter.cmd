@@ -1,7 +1,7 @@
 @echo off & setlocal
 mode con cols=120 lines=55
 chcp 1252>nul
-TITLE  FS Audio Converter [Team QfG] v0.68 beta
+TITLE  FS Audio Converter [Team QfG] v0.69 beta
 
 set PasswordChars=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
 set PasswordLength=5
@@ -57,6 +57,7 @@ set "TIMESTRETCH=NO"
 set "DELAY=0"
 set "AMPLIFY=NORMALIZE"
 set "WAVBR=16"
+set "FLACBR=24"
 set "THDBR=24"
 set "WAVBRAUTO=FALSE"
 set "WAVBRAUTOINFO_TEXT="
@@ -140,6 +141,10 @@ if exist "%~dp0FS_Audio_Converter_Options.ini" (
 		set "WAVBR=%%A"
 		set "WAVBR=!WAVBR:~4!"
 	)
+	FOR /F "delims=" %%A IN ('findstr /C:"FLAC=" "%~dp0FS_Audio_Converter_Options.ini"') DO (
+		set "FLACBR=%%A"
+		set "FLACBR=!FLACBR:~5!"
+	)
 	FOR /F "delims=" %%A IN ('findstr /C:"THD=" "%~dp0FS_Audio_Converter_Options.ini"') DO (
 		set "THDBR=%%A"
 		set "THDBR=!THDBR:~4!"
@@ -208,6 +213,7 @@ if "!TARGET_FOLDER!"=="SAME AS SOURCE\" set "TARGET_FOLDER=%~dp1"
 if exist "!TOOLSpath!\log.txt" del "!TOOLSpath!\log.txt"
 echo !WAVBR!|findstr /I "AUTO">nul 2>&1 && set "WAVBRAUTO=TRUE"
 set "WAVBR_TEXT=!WAVBR:~,2!"
+set "FLACBR_TEXT=!FLACBR!"
 
 ::CHECK SUPPORTED CONTAINER
 if /i "!SOURCEFILEEXT!"==".mkv" set "CONTTRUE=TRUE"
@@ -518,6 +524,10 @@ if "%codec_out_NAME%"=="Mono WAVs" (
 )
 if "%codec_out_NAME%"=="LPCM Multichannel" (
 	set "SHOWBD= [!WAVBRAUTOINFO_TEXT!!WAVBR_TEXT!-Bit]"
+	set "MONOWAVSLAYOUT=-"
+)
+if "%codec_out_NAME%"=="FLAC" (
+	set "SHOWBD= [!FLACBR_TEXT!-Bit]"
 	set "MONOWAVSLAYOUT=-"
 )
 if "%codec_out_NAME%"=="Mono WAVs [ATMOS]" (
@@ -1266,7 +1276,7 @@ if "%Pitch_NAME%"=="NO" set "Pitch=rate"
 IF "%Tempo_NAME%"=="ORIGINAL" set "Pitch=pitch"
 
 if "%codec_out_NAME%"=="FLAC" (
-	set "codec_out=flac"
+	set "codec_out=flac -af aformat=s!FLACBR!"
 	set "codec_ext=flac"
 )
 if "%codec_out_NAME%"=="Mono WAVs [ATMOS]" (
