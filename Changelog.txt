@@ -1,4 +1,14 @@
-FS Audio Converter [Team QfG] v0.69 beta
+FS Audio Converter [Team QfG] v0.70 beta
+
+v0.70
+- Added Support for commandline switches (start FSAC.cmd without parameters to see available switches).
+- Bitdepth autodetect support for FLAC encoding.
+- Option to ENABLE/DISABLE FFMPEG index cachefile.
+- Option to ENABLE/DISABLE Standard Pitch Correction.
+- All files renamed. If you use Shell Extensions, please reinstall them.
+
+v0.69.1
+- Fixed FLAC Encoding error with 24-Bit.
 
 v0.69
 - FLAC Encoding supports Bitrate (16,24,32*) *Only with FFMPEG 7x.
