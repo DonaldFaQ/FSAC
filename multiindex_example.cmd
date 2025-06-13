@@ -1,5 +1,6 @@
 @echo off & setlocal
 setlocal EnableDelayedExpansion
+set "EXTERNSTART=TRUE" rem must be set for the call command.
 set "FSACpath=C:\FSAC"
 set "file=%~1"
 if "!file!"=="" (
