@@ -323,9 +323,9 @@ if "%~2%~3%~4%~5%~6%~7%~8%~9" NEQ "" (
 		set "CODEC=%%A"
 		set "CODEC=!CODEC:~8!"
 		if /i "!CODEC!"=="LPCM" set "codec_out_NAME=LPCM Multichannel"
-		if /i "!CODEC!"=="MONOPCM" set "codec_out_NAME=LPCM Multichannel"
+		if /i "!CODEC!"=="MONOWAVs" set "codec_out_NAME=Mono WAVs"
 		if /i "!CODEC!"=="ATMOS-LPCM" set "codec_out_NAME=LPCM Multichannel [ATMOS]"
-		if /i "!CODEC!"=="ATMOS-MONOPCM" set "codec_out_NAME=Mono WAVs [ATMOS]"
+		if /i "!CODEC!"=="ATMOS-MONOWAVs" set "codec_out_NAME=Mono WAVs [ATMOS]"
 		if /i "!CODEC!"=="FLAC" set "codec_out_NAME=FLAC"
 		if /i "!CODEC!"=="AC3" set "codec_out_NAME=AC-3"
 		if /i "!CODEC!"=="EAC3" set "codec_out_NAME=eAC-3"
@@ -1688,8 +1688,8 @@ goto :eof
 if not exist "!TARGET_FOLDER!" md "!TARGET_FOLDER!"
 if "%Pitch_NAME%"=="NO" set "Pitch_NAME=ORIGINAL"
 if "%Pitch_NAME%"=="YES" set "Pitch_NAME=CORRECTED"
-if "%codec_out_NAME%"=="Mono WAVs" call :MONOWAVs
-if "%codec_out_NAME%"=="Mono WAVs [ATMOS]" call :MONOWAVs
+if "%codec_out_NAME%"=="Mono WAVs" goto :MONOWAVs
+if "%codec_out_NAME%"=="Mono WAVs [ATMOS]" goto :MONOWAVs
 %YELLOW%
 if "%LOGFILE%"=="TRUE" (
 	echo =========>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1730,34 +1730,7 @@ if "%ERRORLEVEL%"=="0" (
 	)
 	echo.
 )
-
-:EXIT
-%WHITE%
-echo EXITING:
-echo.
-%YELLOW%
-echo Cleaning Temp Files. Please Wait ...
-RD /S /Q "!TEMP_FOLDER!">nul
-if exist "!TOOLSpath!\log.txt" del "!TOOLSpath!\log.txt"
-%GREEN%
-echo DONE^^!
-for /F "Tokens=1,2 Delims=:" %%A IN ('echo %time%') DO set "TimeEnd=%%A^:%%B">nul
-set "DateEnd=%DATE%"
-if "%LOGFILE%"=="TRUE" (
-	echo --------------------------------------------------------------------------------------------------------------------------------------------->>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
-	echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
-	echo SCRIPT END DATE / END TIME = %DateEnd% / %TimeEnd%>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
-	echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
-	echo --------------------------------------------------------------------------------------------------------------------------------------------->>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
-	echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
-	echo --- LOGFILE END --->>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
-)
-setlocal DisableDelayedExpansion
-ENDLOCAL
-%WHITE%
-if "%AUTOMODE%"=="OFF" TIMEOUT 30
-goto :eof
-exit
+goto :EXIT
 
 :GSTREAMER_ATMOS_DECODING
 set "WAV_WRONG_HEADER=FALSE"
@@ -2102,7 +2075,6 @@ if "%ERRORLEVEL%"=="0" (
 	echo ERROR^^!
 	echo.
 )
-
 goto :EXIT
 
 :PCM_CHANNEL_10
@@ -2257,7 +2229,7 @@ call :colortxt 0F "            <23976to24|23976to24p>" & call :colortxt 0E "   S
 call :colortxt 0F "    --PITCH-<Adjustments>" & call :colortxt 0E "   Change pitch only. Set one of the following Pitch Adjustments." /n
 call :colortxt 0F "            <25to23976|25to24|23976to25|24to25>" & call :colortxt 0E "   Do not use --TEMPO and --PITCH together!." /n
 call :colortxt 0F "    --CODEC-<Audio Codec>" & call :colortxt 0E "   Set one of the following Audio Codecs." /n
-call :colortxt 0F "            <LPCM|MONOPCM|FLAC|AC3|EAC3|AAC>" & call :colortxt 0E "   Available output audio codecs." /n
+call :colortxt 0F "            <LPCM|MONOWAVs|FLAC|AC3|EAC3|AAC>" & call :colortxt 0E "   Available output audio codecs." /n
 call :colortxt 0F "            <ATMOS-LPCM||ATMOS-MONOPCM>" & call :colortxt 0E "   Dolby Atmos Codecs. Needed installed Dolby Reference Player" /n
 call :colortxt 0F "    --DELAY-<Delay in ms>" & call :colortxt 0E "   Set delay for audio track. for negative delay use -." /n
 call :colortxt 0F "    --AMPLIFY-<AMPLIFY in dB>" & call :colortxt 0E "   Set amplify. for negative amplify use -. Also available switches:" /n
@@ -2273,6 +2245,34 @@ echo.
 echo For unused switches the tool uses standard settings.
 echo.
 cmd.exe /s /k
+exit
+
+:EXIT
+%WHITE%
+echo EXITING:
+echo.
+%YELLOW%
+echo Cleaning Temp Files. Please Wait ...
+RD /S /Q "!TEMP_FOLDER!">nul
+if exist "!TOOLSpath!\log.txt" del "!TOOLSpath!\log.txt"
+%GREEN%
+echo DONE^^!
+for /F "Tokens=1,2 Delims=:" %%A IN ('echo %time%') DO set "TimeEnd=%%A^:%%B">nul
+set "DateEnd=%DATE%"
+if "%LOGFILE%"=="TRUE" (
+	echo --------------------------------------------------------------------------------------------------------------------------------------------->>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
+	echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
+	echo SCRIPT END DATE / END TIME = %DateEnd% / %TimeEnd%>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
+	echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
+	echo --------------------------------------------------------------------------------------------------------------------------------------------->>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
+	echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
+	echo --- LOGFILE END --->>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
+)
+setlocal DisableDelayedExpansion
+ENDLOCAL
+%WHITE%
+if "%EXTERNSTART%"=="TRUE" goto :eof
+if "%AUTOMODE%"=="OFF" TIMEOUT 30
 exit
 
 :FILECOUNTER
