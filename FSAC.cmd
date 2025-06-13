@@ -20,6 +20,7 @@ set "MEDIAINFOpath=%~dp0tools\MediaInfo.exe"
 set "TOOLSpath=%~dp0tools"
 set "CAVERNpath=%~dp0tools\CavernizeGUI.exe"
 
+set "DEBUG=FALSE"
 ::HARDCODED
 set "AUTOMODE=OFF"
 set "FIRSTSTART=TRUE"
@@ -59,7 +60,7 @@ set "Pitch_NAME=NO"
 set "HEADER_FIX=NO"
 set "TIMESTRETCH=NO"
 set "DELAY=0"
-set "AMPLIFY=NORMALIZE"
+set "AMPLIFY=0"
 set "WAVBR=16"
 set "FLACBR=24"
 set "THDBR=24"
@@ -85,7 +86,8 @@ set "CYAN="!sfkpath!" color cyan"
 set "MAGENTA="!sfkpath!" color magenta"
 set "GREY="!sfkpath!" color grey"
 
-if not exist "%~dp0FS_Dolby_Atmos_Muxer.cmd" reg delete "HKLM\Software\Classes\Directory\shell\MenuFSAUDIOCONVERTER" /f>nul 2>&1
+if "%DEBUG%"=="FALSE" set "DEBUGLINE= -loglevel quiet"
+if not exist "%~dp0FSAC_Atmos_Muxer.cmd" reg delete "HKLM\Software\Classes\Directory\shell\MenuFSAUDIOCONVERTER" /f>nul 2>&1
 if "%~1"=="" goto HELP
 
 echo.
@@ -1597,7 +1599,7 @@ if "!ATMOS_OPT!"=="TRUE" call :GSTREAMER_ATMOS_DECODING
 if "!ATMOS_OPT!%REM_DIALNORM%"=="FALSEYES" call :DIALNORM
 if "%DRC%"=="OFF" set "DRC_SCALE=drc_scale=0.0, "
 if "%CACHEFILE%"=="TRUE" (
-	set "CACHING=cachefile="!TEMP_FOLDER!\%Password%.lwi"
+	set "CACHING=cachefile="!TEMP_FOLDER!\%Password%.lwi""
 ) else (
 	set "CACHING=cache=false"
 )
@@ -1707,10 +1709,10 @@ if "%THDAC3%"=="TRUE" (
 	
 echo Encoding. Please Wait ...
 if "%LOGFILE%"=="TRUE" (
-	echo Encoding Line: "!FFMPEGpath!" -y !FFMPEG_DRC_SCALE!-i "!AVSFILE!" -strict experimental -loglevel quiet -stats!PAN! -c:a !codec_out! -strict -2 "!OUTPUTFILE!.!codec_ext!" >>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
+	echo Encoding Line: "!FFMPEGpath!" -y !FFMPEG_DRC_SCALE!-i "!AVSFILE!" -strict experimental!DEBUGLINE! -stats!PAN! -c:a !codec_out! -strict -2 "!OUTPUTFILE!.!codec_ext!" >>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 	echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 )
-"!FFMPEGpath!" -y !FFMPEG_DRC_SCALE!-i "!AVSFILE!" -strict experimental -loglevel quiet -stats!PAN! -c:a !codec_out! -strict -2 "!OUTPUTFILE!.!codec_ext!"
+"!FFMPEGpath!" -y !FFMPEG_DRC_SCALE!-i "!AVSFILE!" -strict experimental!DEBUGLINE! -stats!PAN! -c:a !codec_out! -strict -2 "!OUTPUTFILE!.!codec_ext!"
 if "%ERRORLEVEL%"=="0" (
 	%GREEN%
 	echo DONE^^!
@@ -1793,10 +1795,10 @@ if "!CONTTRUE!"=="TRUE" (
 		echo DEMUXING Atmos from Container^:>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo ==============================>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
-		echo Encoding Line: "!FFMPEGpath!" -y -i "!SOURCEFILE!" -strict experimental -loglevel quiet -stats -map 0:!FTRACK! -c copy -strict -2 "!TEMP_FOLDER!\%Password%.!ATMOSTYPE_EXT!">>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
+		echo Encoding Line: "!FFMPEGpath!" -y -i "!SOURCEFILE!" -strict experimental!DEBUGLINE! -stats -map 0:!FTRACK! -c copy -strict -2 "!TEMP_FOLDER!\%Password%.!ATMOSTYPE_EXT!">>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 	)
-	"!FFMPEGpath!" -y -i "!SOURCEFILE!" -strict experimental -loglevel quiet -stats -map 0:!FTRACK! -c copy -strict -2 "!TEMP_FOLDER!\%Password%.!ATMOSTYPE_EXT!"
+	"!FFMPEGpath!" -y -i "!SOURCEFILE!" -strict experimental!DEBUGLINE! -stats -map 0:!FTRACK! -c copy -strict -2 "!TEMP_FOLDER!\%Password%.!ATMOSTYPE_EXT!"
 	if "%ERRORLEVEL%"=="0" (
 		%GREEN%
 		if "%LOGFILE%"=="TRUE" (
