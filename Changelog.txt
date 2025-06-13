@@ -1,4 +1,16 @@
-FS Audio Converter [Team QfG] v0.70 beta
+FS Audio Converter [Team QfG] v0.70c beta
+
+v0.70c
+- Major Bugfixes.
+
+v0.70b
+- Support for mass indexing via other batch start script.
+  (show multiindex_example.cmd for more information.)
+
+v0.70a
+- Added - DEBUG Switch in FSAC.cmd (Debug=True for complete FFMPEG errorlog).
+- Fixed - Bug with caching On.
+- Changed - Standard Amplify now ORIGINAL.
 
 v0.70
 - Added Support for commandline switches (start FSAC.cmd without parameters to see available switches).
