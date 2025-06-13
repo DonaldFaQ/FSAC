@@ -6,7 +6,7 @@ if "!file!"=="" (
 	echo Batch script for multi index encoding. Please drag and drop input file
 	echo or type ^<%~n0 "MyFile.mkv"^>
 ) else (
-	:: Start all commandos her with call!
+	:: Start all commandos here with call!
 	call "!FSACpath!\FSAC.cmd" "!file!" --Index-2
 	call "!FSACpath!\FSAC.cmd" "!file!" --Index-3
 )
