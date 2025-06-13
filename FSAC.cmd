@@ -1755,7 +1755,8 @@ if "%LOGFILE%"=="TRUE" (
 setlocal DisableDelayedExpansion
 ENDLOCAL
 %WHITE%
-TIMEOUT 30
+if "%AUTOMODE%"=="OFF" TIMEOUT 30
+goto :eof
 exit
 
 :GSTREAMER_ATMOS_DECODING
