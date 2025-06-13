@@ -1,6 +1,6 @@
 @echo off & setlocal
 mode con cols=200 lines=60
-set VERSION=0.70 beta
+set VERSION=0.70a beta
 TITLE FS Audio Converter OPTIONS [Team QfG] v%VERSION%
 setlocal EnableDelayedExpansion
 
