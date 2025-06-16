@@ -73,13 +73,13 @@ The main FSAC script.
 |--------------------------|---------|
 | --Index-`NUMBER`         | Number of Index in container you would decode. Leave empty for the first valid audio stream. ❗SELECT ONLY ONE INDEX❗|
 | --DRC-`ON` `OFF`         | Remove [Dynamic range compression](https://en.wikipedia.org/wiki/Dynamic_range_compression) (DRC) from files. Default `OFF` ≙ removes DRC.|
-| --Tempo-`25to23976``p`   | Change the tempo of the output file. Supported framerates: Slow-down or speed-up between `25` `24` `23,976` fps. `p` means with Pitch correction.|
-|         `25to24``p`      |
-|         `24to23976``p`   |
-|         `23976to25``p`   |
-|         `24to25``p`      |
-|         `23976to24``p`   |
-| --Pitch-`25to23976`      | Change pitch without speed changes. ❗DO NOT USE THE SWITCH --Tempo and --Pitch TOGETHER❗|
+| --Tempo-`25to23976` `p`  | Change the tempo of the output file. Supported framerates: Slow-down or speed-up between `25` `24` `23,976` fps. `p` means with Pitch correction.|
+|         `25to24` `p`     |
+|         `24to23976` `p`  |
+|         `23976to25` `p`  |
+|         `24to25` `p`     |
+|         `23976to24` `p`  |
+| --Pitch-`25to23976`<br>`25to24`      | Change pitch without speed changes. ❗DO NOT USE THE SWITCH --Tempo and --Pitch TOGETHER❗|
 |         `25to24`         |
 |         `23976to25`      |
 |         `24to25`         |
