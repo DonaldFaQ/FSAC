@@ -73,7 +73,7 @@ The main FSAC script.
 |-------------------------------|---------|
 | --Index-`NUMBER`              | Number of Index in container you would decode. Leave empty for the first valid audio stream. ❗SELECT ONLY ONE INDEX❗|
 | --DRC-`ON` `OFF`              | Remove [Dynamic range compression](https://en.wikipedia.org/wiki/Dynamic_range_compression) (DRC) from files. Default `OFF` ≙ removes DRC.|
-| --Tempo-`25to23976` `p`<br>--Tempo-`25to24` `p`<br>--Tempo-`24to23976` `p`<br>--Tempo-`23976to25` `p`<br>--Tempo-`24to25` `p`<br>--Tempo-`23976to24` `p`        | Change the tempo of the output file. Supported framerates: Slow-down or speed-up between `25` `24` `23,976` fps. `p` means with Pitch correction.|
+| --Tempo-`25to23976p`<br>--Tempo-`25to24p`<br>--Tempo-`24to23976p`<br>--Tempo-`23976to25p`<br>--Tempo-`24to25p`<br>--Tempo-`23976to24p`        | Change the tempo of the output file. Supported framerates: Slow-down or speed-up between `25` `24` `23,976` fps. `p` means with Pitch correction.|
 | --Pitch-`25to23976`<br>--Pitch-`25to24`<br>--Pitch-`23976to25`<br>--Pitch-`24to25`         | Change pitch without speed changes.<br>❗DO NOT USE THE SWITCH --Tempo and --Pitch TOGETHER❗|
 | --Codec-`LPCM`                | Choose your output codec. [] Codecs only available for Atmos decoding.|
 |         `MONOWAVs`            |
