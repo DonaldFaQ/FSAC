@@ -79,7 +79,7 @@ The main FSAC script.
 |         `23976to25` `p`  |
 |         `24to25` `p`     |
 |         `23976to24` `p`  |
-| --Pitch-`25to23976`<br>`25to24`      | Change pitch without speed changes. ❗DO NOT USE THE SWITCH --Tempo and --Pitch TOGETHER❗|
+| --Pitch-`25to23976`<br>         `25to24`<br>         `23976to25`         <br>`24to25`         | Change pitch without speed changes. ❗DO NOT USE THE SWITCH --Tempo and --Pitch TOGETHER❗|
 |         `25to24`         |
 |         `23976to25`      |
 |         `24to25`         |
