@@ -1,98 +1,62 @@
 # FSAC
 
-FS Audio Converter is a FrameServer based CLI Tool for audio encoding. You need an installed Avisynth+ Frameserver for using this tool.
-Encoding engine is FFMPEG (for Atmos files Dolby Reference Player + FFMPEG). 
-Supported Output Codecs: 
+**FSAC** (_**FS** **A**udio **C**onverter_) is a Frameserver based CLI tool for audio encoding. You need an installed AviSynth+ frameserver to be able to use this tool.  
+Encoding engine is FFmpeg. For Atmos files, Dolby Reference Player is needed additionally.
 
-PCM (WAV)
+_Supported output codecs:_
+* PCM (WAV)
+* LPCM (WAVE 64 / CAF)
+* FLAC
+* AC3 (Dolby Digital)
+* E-AC3 (Dolby Digital Plus ⚠️ _UNSIGNED_)
+* AAC
 
-LPCM (WAVE 64 / CAF)
-                         
-FLAC
+_Supported input:_  
+* all FFmpeg compatible audio codecs
+* the following containers: `MKV` `MKA` `M2TS` `TS` `AVI` `EVO` `VOB`
 
-AC3
+❗REQUIRED 3RD PARTY TOOLS MUST BE DOWNLOAD HERE:❗  
+[![Tools Download on MEGA](https://i.ibb.co/CzHqWx9/MEGA.png)](https://mega.nz/folder/NhdS3aTD#W97ktr4bpBkUbB5c2WOxqw)
 
-E-AC3 (UNSIGNED)
+## FS_Audio_Converter_Options.cmd
 
-AAC
+A script for setting the general options of FSAC.
 
-NEEDED 3RD PARTY TOOLS MUST BE DOWNLOAD HERE:
-
-[<img src="https://i.ibb.co/CzHqWx9/MEGA.png">](https://mega.nz/folder/NhdS3aTD#W97ktr4bpBkUbB5c2WOxqw)
-
-
-# FS_Audio_Converter_Options.cmd
-
-Options script for settings.
-------------------------------
-
-Mono wavs Layout             = Channel naming of mono wav files. DTS-HD Master Suite renames all files correctly for the DTS-HD Master Suite.
-
-WAV Bitdepth / Auto Bitdepth = Set the standard Bitdepth for PCM files. If Auto Bitdepth is set and the tool found bitdepth
-                                in source file this bitdepth will be used. Atmos bitdepth will set seperatly in menu.
-                                
-Dolby Atmos Demuxing         = Supports demuxing from Atmos files in following Layouts: 9.1.6/7.1.4/7.1.2/5.1.4/5.1.2.
-                                FOR ATMOS DEMUXING YOU NEED DOLBY REFERENCE PLAYER INSTALLED ON YOUR SYSTEM!
-                                
-Dolby Atmos Priority         = If Dolby Atmos Demuxing is enabled the tool changes the first channel layout to 9.1.6 with Atmos files.
-
-Dolby Atmos Nameset          = Nameset for the Channel Layout for Atmos demuxing in Mono WAVs. Example Templates:
-                                FFMPEG preset:
-                                FL,FR,FC,LFE,SL,SR,BL,BR,WL,WR,TFL,TFR,TSL,TSR,TBL,TBR
-
-                                shebdabe preset:
-                                L,R,C,LFE,SL,SR,BL,BR,WL,WR,T_FL,T_FR,T_SL,T_SR,T_BL,T_BR
-
-                                Numeric preset:
-                                01_FL,02_FR,03_FC,04_LFE,05_SL,06_SR,07_BL,08_BR,09_WL,10_WR,11_TFL,12_TFR,13_TSL,14_TSR,15_TBL,16_TBR
-                                
-LPCM Container               = WAV/CAF You can set the Container for Multichannel LPCM encoding. WAV = WAVE 64 Container.
-
-Standard Loudness            = ORIGINAL - No changes
-                                DIALNORM -31dB - Analysing dialnorm in file and raise volume x dB till dialnorm -31dB is reached.
-                                NORMALIZED - raised volume till highest peak reaches -1dB.
-                                
-Short Filenames              = Removes all infos from output filenames for smaller filenames.
-
-Logfile                      = Create logfile or not.
-
-Create Shell Extensions      = Create Shell Extensions for right click menu of a file.
-                                WITH ACTIVATED UAC START THE SCRIPT AS ADMINISTRATOR OTHERWHISE THE REGISTRY SETTINGS CANNOT BE WRITE!
+| Category                      | Option                       | Description |
+|------------------------------ |------------------------------|-------------|
+| FOLDERS                       | `O` `T` `R`                  | Set the local paths for: **O**utputs of the tool, its **T**emp folder, and the installed Dolby **R**eference Player.|
+| SETTINGS: Mono WAVs Layout    | `L`                          | Channel naming of splitted mono WAV files. `DTS-HD Master Audio Suite` renames all files correctly for that DTS Suite.|
+| BITRATES menu: `1`            | WAV: Bitdepth / Auto Bitdepth| Set the standard Bit depth for PCM files. If `Auto Bitdepth` is set, the tool will use the bit depth found in the source file.|
+|                               | other codecs                 | Set bit depths, bit rates or quality for a variety of common audio codecs.|
+| MISC menu: `2`                | Dolby Atmos Demuxing         | `ENABLED` supports demuxing of Atmos files with following Layouts: `9.1.6` `7.1.4` `7.1.2` `5.1.4` `5.1.2`.<br>⚠️For Atmos demuxing, you need Dolby Reference Player installed on your system❗|
+|                               | Dolby Atmos Priority         | When `ENABLED`, FSAC automatically changes the preselected channel layout to `9.1.6 [ATMOS]` when demuxing a file (and only if Dolby Atmos Demuxing is also `ENABLED`). Channel layout can still be changed afterwards.|
+|                               | Dolby Atmos Nameset          | Nameset for the Channel Layouts for Atmos demuxing to Mono WAVs.<br>_Example Templates:_<br>* FFmpeg preset: `FL FR FC LFE SL SR BL BR WL WR TFL TFR TSL TSR TBL TBR`<br>* shebdabe preset: `L R C LFE SL SR BL BR WL WR T_FL T_FR T_SL T_SR T_BL T_BR`<br>* Numeric preset: `01_FL 02_FR 03_FC 04_LFE 05_SL 06_SR 07_BL 08_BR 09_WL 10_WR 11_TFL 12_TFR 13_TSL 14_TSR 15_TBL 16_TBR`|
+|                               | LPCM Container               | Set the container for Multichannel LPCM encoding to `WAV` (WAVE 64 Container) or `CAF`.|
+|                               | Standard Loudness            | `ORIGINAL`: no changes<br>`NORMALIZED`: raise volume until highest peak reaches −1 dB<br>`DIALNORM -31dB`: Analyze [DialNorm](https://en.wikipedia.org/wiki/Dialnorm) of source file, then raise volume (dB) until DialNorm −31 dB is reached.|
+|                               | Short Filenames              | `ENABLED`: Removes all additional info from output filenames for shorter output file names. Helpful if path is too long or file names get confusing. |
+|                               | Logfile                      | `ENABLED`: Writes an additional log file next to the output file (identical naming).|
+|  Shell Extensions             | Create (`3`) / Delete (`4`)  | Create system-wide right click context menu items for files to use FSAC.<br>⚠️With activated Windows UAC, start the script as administrator, otherwhise the registry settings cannot be written❗ |
 
 
-# FS_Audio_Converter.cmd
+## FS_Audio_Converter.cmd
 
-Mainscript.
-----------------------
+The main FSAC script.
 
-Support:                        All FFMPEG compatible audio codecs and following container: MKV/MKA/M2TS/TS/AVI/EVO/VOB
+### Usage
+* Open a file/container with this script (`FS_Audio_Converter.cmd MyMovie.mkv`)
+* _OR_ drag and drop a file over this script
+* _OR_ use Shell Extension menu
 
-Usage:                          Open a file/container with this script (FS_Audio_Converter.cmd mymovie.mkv) or drag and drop a file over
-                                this script or use Shell Extension menu.
-
-Stream                       = If input is a container file select the stream for encoding.
-
-DRC                          = Removes DRC (Dynamic range compression) from files. Standard: OFF.
-
-Codec                        = Choose your encoding codec.
-
-Channel Layout               = Only available for Atmos demuxing. Set here the Atmos Channel Layout.
-
-Sample Rate                  = Sample rate for output file. Standard: ORIGINAL.
-
-Tempo                        = You can change the tempo of the output file. Supported framerates: 25fps/24fps/23,976fps
-
-Pitch Correction             = If tempo changed you can set the pitch correction on/off. If tempo not changed, you can
-                                change the pitch without tempo changes. Supported framerates: 25fps/24fps/23,976fps
-                                
-Delay                        = You can set a Delay in ms for output file. For negative delay use -x ms.
-
-Amplify                      = Set Amplify of target file. For negative Amplify use -x dB. You can also use some pre defined options:
-
-                                ORIGINAL - No changes (will be set if Amplify is set to 0).
-                                
-                                DIALNORM -31dB - Analysing dialnorm in file and raise volume x dB till dialnorm -31dB is reached.
-                                
-                                NORMALIZED - raised volume till highest peak reaches -1dB.
-                                
-Save Settings                = Saves all settings. This is helpful for TV-shows, if u must encode many files with same settings.
+### Settings
+| Setting          | Options |
+|------------------|---------|
+| Stream           | If the input is a container with multiple streams, select the stream you want to encode.|
+| DRC              | Remove [Dynamic range compression](https://en.wikipedia.org/wiki/Dynamic_range_compression) (DRC) from files. Default `OFF` ≙ removes DRC|
+| Codec            | Choose your output codec.|
+| Channel Layout   | Can only be changed when demuxing Atmos. Sets the Atmo Channel Layout.|
+| Sample Rate      | Sample rate in kHz for output files. Default `ORIGINAL`. Options `48000` `44100` `22050`|
+| Tempo            | Change the tempo of the output file. Supported framerates: Slow-down or speed-up between `25` `24` `23,976` fps|
+| Pitch Correction | Along with the tempo change, you can opt to use pitch correction:<br>`YES`: resulting pitch will be identical with source, but the tempo is changed<br>`NO`: resulting pitch will be higher/lower than source file (depending on the tempo change).<br>If no tempo change is applied above, you can still change the pitch without tempo change. Supported framerates (fps): `25` `24` `23,976` slow-down or speed-up|
+| Delay            | Set a Delay in Milliseconds for output file. Just type the number without "ms". For negative delay use `-` before the number.
+| Amplify          | Set amplification in dB for output file. Just type the number without "dB". For negative amplification, use `-` before the number.<br>There are also some predefined options:<br>`ORIGINAL`: No changes (same result as Amplify `0`).<br>`DIALNORM -31dB`: Analyze DialNorm of source file, then raise volume (dB) until DialNorm −31 dB is reached.<br>`NORMALIZED`: raise volume until highest peak reaches −1 dB|
+| Save Settings    | Saves all settings. This is helpful e.g. for TV shows where you have to encode many files with the same adjusted settings|
