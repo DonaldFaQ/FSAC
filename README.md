@@ -65,29 +65,20 @@ The main FSAC script.
 ### Usage with Cammand Lines (v0.70 and higher).
 * Open a file/container with this script (`FSAC.cmd MyMovie.mkv`) and the switch(es) behind.
 * Open this script (`FSAC.cmd`) and see all available switches.
-* Example:
+
+### Example:
 * FSAC.cmd MyMovie.mkv `--index-1` `--DRC-off` `--Tempo25to23976p` `--Dir-C:\MyAudio`
 
 ### Settings
-| Switches                      | Options |
-|-------------------------------|---------|
-| --Index-`NUMBER`              | Number of Index in container you would decode. Leave empty for the first valid audio stream. ❗SELECT ONLY ONE INDEX❗|
-| --DRC-`ON` `OFF`              | Remove [Dynamic range compression](https://en.wikipedia.org/wiki/Dynamic_range_compression) (DRC) from files. Default `OFF` ≙ removes DRC.|
-| --Tempo-`25to23976p`<br>--Tempo-`25to24p`<br>--Tempo-`24to23976p`<br>--Tempo-`23976to25p`<br>--Tempo-`24to25p`<br>--Tempo-`23976to24p`        | Change the tempo of the output file. Supported framerates: Slow-down or speed-up between `25` `24` `23,976` fps. `p` means with Pitch correction.|
-| --Pitch-`25to23976`<br>--Pitch-`25to24`<br>--Pitch-`23976to25`<br>--Pitch-`24to25`         | Change pitch without speed changes.<br>❗DO NOT USE THE SWITCH --Tempo and --Pitch TOGETHER❗|
-| --Codec-`LPCM`                | Choose your output codec. [] Codecs only available for Atmos decoding.|
-|         `MONOWAVs`            |
-|         `FLAC`                |
-|         `AC3`                 |
-|         `EAC3`                |
-|         `AAC`                 |
-|         `Atmos-LPCM`          | ❗ONLY FOR ATMOS DECODING WITH INSTALLED DOLBY REFERENCE PLAYER❗|
-|         `Atmos-MONOWAVs`      | ❗ONLY FOR ATMOS DECODING WITH INSTALLED DOLBY REFERENCE PLAYER❗|
-| --Delay-`ms`                  | Set a Delay in Milliseconds for output file. Just type the number without "ms". For negative delay use `-` before the number.|
-| --Amplify-`dB`                | Set amplification in dB for output file. Just type the number without "dB". For negative amplification, use `-` before the number.|
-|	        `ORIGINAL`          | No changes (same result as Amplify `0`).|
-|			`DIALNORM`          | Analyze DialNorm of source file, then raise volume (dB) until DialNorm −31 dB is reached.|
-|           `NORMALIZED`        | Raise volume until highest peak reaches −1 dB.|
-| --Dir-`<Path>`                | Set output directory ❗WITHOUT `""`❗|
+| Command            | Switches            | Options |
+|--------------------|---------------------|---------|
+| --Index-           | `NUMBER`            | Number of Index in container you would decode. Leave empty for the first valid audio stream.<br>❗SELECT ONLY ONE INDEX❗|
+| --DRC-             | `ON` `OFF`          | Remove [Dynamic range compression](https://en.wikipedia.org/wiki/Dynamic_range_compression) (DRC) from files. Default `OFF` ≙ removes DRC.|
+| --Tempo-           | `25to23976` `p`<br> `25to24p` `p`<br> `24to23976p` `p`<br> `23976to25p` `p`<br> `24to25p` `p`<br> `23976to24p` `p` | Change the tempo of the output file. Supported framerates: Slow-down or speed-up between `25` `24` `23,976` fps.<br>`p` means with Pitch correction.|
+| --Pitch-           | `25to23976` <br> `25to24`<br> `23976to25`<br>`24to25` | Change pitch without speed changes.<br>❗DO NOT USE THE SWITCH --Tempo and --Pitch TOGETHER❗|
+| --Codec-           | `LPCM`<br> `MONOWAVs`<br> `FLAC`<br> `AC3`<br> `EAC3`<br> `AAC`<br> `Atmos-LPCM`<br> `Atmos-MONOWAVs`<br> | Choose your output codec. ❗The codecs `Atmos-LPCM` and `Atmos-MONOWAVs` only available with installed Dolby Reference Player❗|
+| --Delay-           | `ms`                | Set a Delay in Milliseconds for output file. Just type the number without "ms". For negative delay use `-` before the number.|
+| --Amplify-         | `dB`<br> `ORIGINAL`<br> `DIALNORM`<br> `NORMALIZED` | Set amplification in dB for output file. Just type the number without "dB". For negative amplification, use `-` before the number.<br>There are also some predefined options:<br>`ORIGINAL`: No changes (same result as Amplify `0`).<br>`DIALNORM`: Analyze DialNorm of source file, then raise volume (dB) until DialNorm −31 dB is reached.<br>`NORMALIZED`: raise volume until highest peak reaches −1 dB.|
+| --Dir-             | `<Path>`            | Set output directory ❗WITHOUT `""`❗|
 
 * For Multindexing and start from a own batch file, take a look at the file `multiindex_example.cmd`.
