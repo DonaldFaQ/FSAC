@@ -1378,26 +1378,16 @@ echo.
 echo    Output Folder:
 echo    !TARGET_FOLDER_STRING!
 echo.
-call :colortxt 0B "Stream              : %TRACK% [" & call :!TRACKCHECK_TEXT! & call :colortxt 0B "]" /n
+if "%CONTTRUE%"=="TRUE" call :colortxt 0B "Stream              : %TRACK% [" & call :!TRACKCHECK_TEXT! & call :colortxt 0B "]" /n
 echo DRC                 : %DRC%
 echo Codec               : %codec_out_NAME%%SHOWBD% [%BITRATE_NAME%]
-if "!ATMOSFILE!"=="TRUE" (
-	echo Channel Layout      : !C_LAYOUT!
-	echo Mono WAVs Layout    : !MONOWAVSLAYOUT!
-	echo Sample Rate         : %SAMPLE_RATE% %SAMPLE_RATE_NAME%
-	echo Tempo               : %Tempo_NAME%
-	echo Pitch Correction    : %Pitch_NAME%
-	echo Delay               : %SHOWDELAY%
-	echo Amplify             : %SHOWAMP%
-) 
-if "!ATMOSFILE!"=="FALSE" (
-	echo Channel Layout      : !C_LAYOUT!
-	echo Mono WAVs Layout    : !MONOWAVSLAYOUT!
-	echo Sample Rate         : %SAMPLE_RATE% %SAMPLE_RATE_NAME%
-	echo Tempo               : %Tempo_NAME%
-	echo Pitch Correction    : %Pitch_NAME%
-	echo Delay               : %SHOWDELAY%
-	echo Amplify             : %SHOWAMP%
+echo Channel Layout      : !C_LAYOUT!
+echo Mono WAVs Layout    : !MONOWAVSLAYOUT!
+echo Sample Rate         : %SAMPLE_RATE% %SAMPLE_RATE_NAME%
+echo Tempo               : %Tempo_NAME%
+echo Pitch Correction    : %Pitch_NAME%
+echo Delay               : %SHOWDELAY%
+echo Amplify             : %SHOWAMP%
 )
 echo.
 %WHITE%
@@ -2230,7 +2220,7 @@ call :colortxt 0F "    --PITCH-<Adjustments>" & call :colortxt 0E "   Change pit
 call :colortxt 0F "            <25to23976|25to24|23976to25|24to25>" & call :colortxt 0E "   Do not use --TEMPO and --PITCH together!." /n
 call :colortxt 0F "    --CODEC-<Audio Codec>" & call :colortxt 0E "   Set one of the following Audio Codecs." /n
 call :colortxt 0F "            <LPCM|MONOWAVs|FLAC|AC3|EAC3|AAC>" & call :colortxt 0E "   Available output audio codecs." /n
-call :colortxt 0F "            <ATMOS-LPCM||ATMOS-MONOPCM>" & call :colortxt 0E "   Dolby Atmos Codecs. Needed installed Dolby Reference Player" /n
+call :colortxt 0F "            <ATMOS-LPCM|ATMOS-MONOWAVs>" & call :colortxt 0E "   Dolby Atmos Codecs. Needed installed Dolby Reference Player" /n
 call :colortxt 0F "    --DELAY-<Delay in ms>" & call :colortxt 0E "   Set delay for audio track. for negative delay use -." /n
 call :colortxt 0F "    --AMPLIFY-<AMPLIFY in dB>" & call :colortxt 0E "   Set amplify. for negative amplify use -. Also available switches:" /n
 call :colortxt 0F "              <DIALNORM|NORMALIZE>" & call :colortxt 0E "   DIALNORM sets audio amplify to -31dB, NORMALIZE sets highest peak to -0dB" /n
