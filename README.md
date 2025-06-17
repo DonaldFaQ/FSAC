@@ -62,9 +62,10 @@ The main FSAC script.
 | Amplify                  | Set amplification in dB for output file. Just type the number without "dB". For negative amplification, use `-` before the number.<br>There are also some predefined options:<br>`ORIGINAL`: No changes (same result as Amplify `0`).<br>`DIALNORM`: Analyze DialNorm of source file, then raise volume (dB) until DialNorm −31 dB is reached.<br>`NORMALIZED`: raise volume until highest peak reaches −1 dB.|
 | Save Settings            | Saves all settings. This is helpful e.g. for TV shows where you have to encode many files with the same adjusted settings.|
 
-### Usage with Cammand Lines (v0.70 and higher).
+### Usage with Command Lines (v0.70 and higher).
 * Open a file/container with this script (`FSAC.cmd MyMovie.mkv`) and the switch(es) behind.
 * Open this script (`FSAC.cmd`) and see all available switches.
+* For Multindexing and start from a own batch file, take a look at the file `multiindex_example.cmd`.
 
 ### Example:
 * FSAC.cmd MyMovie.mkv `--index-1` `--DRC-off` `--Tempo25to23976p` `--Dir-C:\MyAudio`
@@ -81,4 +82,5 @@ The main FSAC script.
 | --Amplify-                    | `dB`<br> `ORIGINAL`<br> `DIALNORM`<br> `NORMALIZED`           | Set amplification in dB for output file. Just type the number without "dB". For negative amplification, use `-` before the number.<br>There are also some predefined options:<br>`ORIGINAL`: No changes (same result as Amplify `0`).<br>`DIALNORM`: Analyze DialNorm of source file, then raise volume (dB) until DialNorm −31 dB is reached.<br>`NORMALIZED`: raise volume until highest peak reaches −1 dB.|
 | --Dir-                        | `<Path>`                     | Set output directory ❗WITHOUT `""`❗|
 
-* For Multindexing and start from a own batch file, take a look at the file `multiindex_example.cmd`.
+![FSAC](https://github.com/user-attachments/assets/db7c8617-6a9f-438a-98dc-93b39cb42bb0)
+
