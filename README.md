@@ -54,7 +54,7 @@ The main FSAC script.
 | Stream                   | If the input is a container with multiple streams, select the stream you want to encode.|
 | DRC                      | Remove [Dynamic range compression](https://en.wikipedia.org/wiki/Dynamic_range_compression) (DRC) from files. Default `OFF` ≙ removes DRC.|
 | Codec                    | Choose your output codec.|
-| Channel Layout           | Can only be changed when demuxing Atmos. Sets the Atmo Channel Layout..|
+| Channel Layout           | Can only be changed when demuxing Atmos. Sets the Atmos Channel Layout..|
 | Sample Rate              | Sample rate in kHz for output files. Default `ORIGINAL`. Options `48000` `44100` `22050`.|
 | Tempo                    | Change the tempo of the output file. Supported framerates: Slow-down or speed-up between `25` `24` `23,976` fps.|
 | Pitch Correction         | Along with the tempo change, you can opt to use pitch correction:<br>`YES`: resulting pitch will be identical with source, but the tempo is changed<br>`NO`: resulting pitch will be higher/lower than source file (depending on the tempo change).<br>If no tempo change is applied above, you can still change the pitch without tempo change. Supported framerates (fps): `25` `24` `23,976` slow-down or speed-up.|
@@ -68,7 +68,7 @@ The main FSAC script.
 * For Multindexing and start from a own batch file, take a look at the file `multiindex_example.cmd`.
 
 ### Example:
-* FSAC.cmd MyMovie.mkv `--index-1` `--DRC-off` `--Tempo25to23976p` `--Dir-C:\MyAudio`
+* FSAC.cmd MyMovie.mkv `--index-1` `--DRC-off` `--Tempo-25to23976p` `--Dir-C:\MyAudio`
 
 ### Settings
 | Command                       | Switches                     | Options     |
