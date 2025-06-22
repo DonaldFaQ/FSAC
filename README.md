@@ -73,14 +73,14 @@ The main FSAC script.
 ### Settings
 | Command                       | Switches                     | Options     |
 |------------------------------ |------------------------------|-------------|
-| --Index-                      | `NUMBER`                     | Number of Index in container you would decode. Leave empty for the first valid audio stream.<br>❗SELECT ONLY ONE INDEX❗|
+| --Index-                      | `NUMBER`                     | Number of Index in container you would decode. Leave empty for the first valid audio stream.<br>⚠️SELECT ONLY ONE INDEX❗|
 | --DRC-                        | `ON` `OFF`                   | Remove [Dynamic range compression](https://en.wikipedia.org/wiki/Dynamic_range_compression) (DRC) from files. Default `OFF` ≙ removes DRC.|
 | --Tempo-                      | `25to23976` `p`<br> `25to24` `p`<br> `24to23976` `p`<br> `23976to25` `p`<br> `24to25` `p`<br> `23976to24` `p`         | Change the tempo of the output file. Supported framerates: Slow-down or speed-up between `25` `24` `23,976` fps.<br>`p` means with Pitch correction.|
-| --Pitch-                      | `25to23976` <br> `25to24`<br> `23976to25`<br>`24to25`              | Change pitch without speed changes.<br>❗DO NOT USE THE SWITCH --Tempo and --Pitch TOGETHER❗|
-| --Codec-                      | `LPCM`<br> `MONOWAVs`<br> `FLAC`<br> `AC3`<br> `EAC3`<br> `AAC`<br> `Atmos-LPCM`<br> `Atmos-MONOWAVs`<br>         | Choose your output codec. ❗The codecs `Atmos-LPCM` and `Atmos-MONOWAVs` only available with installed Dolby Reference Player❗|
+| --Pitch-                      | `25to23976` <br> `25to24`<br> `23976to25`<br>`24to25`              | Change pitch without speed changes.<br>⚠️DO NOT USE THE SWITCH --Tempo and --Pitch TOGETHER❗|
+| --Codec-                      | `LPCM`<br> `MONOWAVs`<br> `FLAC`<br> `AC3`<br> `EAC3`<br> `AAC`<br> `Atmos-LPCM`<br> `Atmos-MONOWAVs`<br>         | Choose your output codec. ⚠️The codecs `Atmos-LPCM` and `Atmos-MONOWAVs` only available with installed Dolby Reference Player❗|
 | --Delay-                      | `ms`                         | Set a Delay in Milliseconds for output file. Just type the number without "ms". For negative delay use `-` before the number.|
 | --Amplify-                    | `dB`<br> `ORIGINAL`<br> `DIALNORM`<br> `NORMALIZED`           | Set amplification in dB for output file. Just type the number without "dB". For negative amplification, use `-` before the number.<br>There are also some predefined options:<br>`ORIGINAL`: No changes (same result as Amplify `0`).<br>`DIALNORM`: Analyze DialNorm of source file, then raise volume (dB) until DialNorm −31 dB is reached.<br>`NORMALIZED`: raise volume until highest peak reaches −1 dB.|
-| --Dir-                        | `<Path>`                     | Set output directory ❗WITHOUT `""`❗|
+| --Dir-                        | `<Path>`                     | Set output directory ⚠️WITHOUT `""`❗|
 
 ![FSAC](https://github.com/user-attachments/assets/db7c8617-6a9f-438a-98dc-93b39cb42bb0)
 
