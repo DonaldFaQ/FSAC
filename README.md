@@ -1,4 +1,7 @@
 # FSAC
+[![GitHub version](https://img.shields.io/github/v/release/DonaldFaQ/FSAC)](https://github.com/DonaldFaQ/DDVT/)
+![BeHappy number of downloads](https://img.shields.io/github/downloads/DonaldFaQ/FSAC/latest/total.svg)
+[![download latest release](https://img.shields.io/badge/FSAC-download-green?style=flat)](https://github.com/DonaldFaQ/FSAC/releases/latest)
 
 **FSAC** (_**FS** **A**udio **C**onverter_) is a Frameserver based CLI tool for audio encoding.
 You need an installed AviSynth+ frameserver to be able to use this tool.  
