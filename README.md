@@ -19,7 +19,8 @@ _Supported input:_
 * all FFmpeg compatible audio codecs
 * the following containers: `MKV` `MKA` `M2TS` `TS` `AVI` `EVO` `VOB`
 
-❗REQUIRED 3RD PARTY TOOLS MUST BE DOWNLOAD HERE:❗  
+❗REQUIRED 3RD PARTY TOOLS MUST BE DOWNLOAD HERE:❗
+
 [![Tools Download on MEGA](https://i.ibb.co/CzHqWx9/MEGA.png)](https://mega.nz/folder/NhdS3aTD#W97ktr4bpBkUbB5c2WOxqw)
 
 ## FSAC_Options.cmd
