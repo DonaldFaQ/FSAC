@@ -1,8 +1,12 @@
 @echo off & setlocal
-mode con cols=120 lines=55
+mode con cols=120 lines=60
 chcp 1252>nul
+set "VERSION=--N.A.-- INCORRECTLY INSTALLED"
+set "HEADER1=File "%~dp0DDVT_OPTIONS.cmd" missing! Script works not correctly!"
+FOR /F "tokens=2 delims==" %%A IN ('findstr /C:"HEADER1=" "%~dp0FSAC_OPTIONS.cmd"') DO set "HEADER1=%%A"
 FOR /F "tokens=2 delims==" %%A IN ('findstr /C:"VERSION=" "%~dp0FSAC_OPTIONS.cmd"') DO set "VERSION=%%A"
 TITLE FS Audio Converter [Team QfG] v%VERSION%
+set DESIGN=STANDARD
 
 set PasswordChars=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
 set PasswordLength=5
@@ -11,6 +15,7 @@ call :CreatePassword Password
 setlocal EnableDelayedExpansion
 
 ::Change to your liking
+set "Cecho=%~dp0tools\cecho_x64.exe"
 set "sfkpath=%~dp0tools\sfk.exe"
 set "eac3topath=%~dp0tools\eac3to.exe"
 set "FFMPEGpath=%~dp0tools\ffmpeg.exe"
@@ -77,25 +82,10 @@ set "PAN="
 set "51PAN=FALSE"
 set "FILE_COUNTER=0"
 
-set "WAIT="!sfkpath!" sleep"
-set "GREEN="!sfkpath!" color green"
-set "RED="!sfkpath!" color red"
-set "YELLOW="!sfkpath!" color yellow"
-set "WHITE="!sfkpath!" color white"
-set "CYAN="!sfkpath!" color cyan"
-set "MAGENTA="!sfkpath!" color magenta"
-set "GREY="!sfkpath!" color grey"
-
 if "%DEBUG%"=="FALSE" set "DEBUGLINE= -loglevel quiet"
 if not exist "%~dp0FSAC_Atmos_Muxer.cmd" reg delete "HKLM\Software\Classes\Directory\shell\MenuFSAUDIOCONVERTER" /f>nul 2>&1
-if "%~1"=="" goto HELP
-
-echo.
 
 :BEGIN
-if "%OPTIONS%"=="YES" call "%~dp0FSAC_Options.cmd"
-set "OPTIONS=NO"
-
 ::Check for INI and Load Settings
 if exist "%~dp0FSAC_Options.ini" (
 	FOR /F "delims=" %%A IN ('findstr /C:"TARGET Folder=" "%~dp0FSAC_Options.ini"') DO (
@@ -174,6 +164,11 @@ if exist "%~dp0FSAC_Options.ini" (
 		set "AACBR=%%A"
 		set "AACBR=!AACBR:~4!"
 	)
+	FOR /F "delims=" %%A IN ('findstr /C:"DESIGN=" "%~dp0FSAC_Options.ini"') DO (
+		set "DESIGN=%%A"
+		set "DESIGN=!DESIGN:~7!"
+		FOR /F "usebackq" %%A IN ('"!DESIGN!"') DO set "DESIGN_STRING=%%~nA">nul 2>&1
+	)
 )
 if exist "%~dp0FSAC_Settings.ini" (
 	for /F "delims=" %%A IN ('findstr /C:"Stream=" "%~dp0FSAC_Settings.ini"') DO (
@@ -213,6 +208,44 @@ if exist "%~dp0FSAC_Settings.ini" (
 		set "AMPLIFY=!AMPLIFY:~8!"
 	)
 )
+
+set "HCWHITE="!sfkpath!" color white"
+set "HCGREY="!sfkpath!" color grey"
+set "HCRED="!sfkpath!" color red"
+set "HCGREEN="!sfkpath!" color green"
+set "HCYELLOW="!sfkpath!" color yellow"
+set "HC_WHITE=0F"
+set "HC_GREY=08"
+set "HC_RED=0C"
+set "HC_GREEN=0A"
+set "HC_YELLOW=0E"
+set "GREY="!sfkpath!" color grey"
+set "RED="!sfkpath!" color red"
+set "GREEN="!sfkpath!" color green"
+set "YELLOW="!sfkpath!" color yellow"
+set "BLUE="!sfkpath!" color blue"
+set "MAGENTA="!sfkpath!" color magenta"
+set "CYAN="!sfkpath!" color cyan"
+set "WHITE="!sfkpath!" color white"
+set "_GREY=08"
+set "_RED=0C"
+set "_GREEN=0A"
+set "_YELLOW=0E"
+set "_BLUE=09"
+set "_MAGENTA=0D"
+set "_CYAN=0B"
+set "_WHITE=0F"
+
+if "!DESIGN!" NEQ "STANDARD" (
+	call "!DESIGN!"
+	FOR /F "usebackq" %%A IN ('"!DESIGN!"') DO set "DESIGN_STRING=%%~nA
+) else (
+	set "DESIGN_STRING=STANDARD"
+)
+
+if "%~1"=="" goto HELP
+if "%OPTIONS%"=="YES" call "%~dp0FSAC_Options.cmd"
+set "OPTIONS=NO"
 
 ::include Switches
 if "%~2%~3%~4%~5%~6%~7%~8%~9" NEQ "" (
@@ -381,14 +414,14 @@ if "!CONTTRUE!"=="TRUE" (
 	"!MEDIAINFOpath!" --full "!SOURCEFILE!" "--Inform=Audio;%%ID%%: %%Format_Commercial%% %%Format_AdditionalFeatures%%,%%Channels%% Channels,%%ChannelLayout%%|%%BitDepth%%|\r\n">"%TEMP_FOLDER%\info.txt"
 	:: HEADER FILE
 	"!MEDIAINFOpath!" --full "!SOURCEFILE!" "--Inform=General;!SOURCEFILENAME!!SOURCEFILEEXT!, %%AudioCount%% Audio Track(s), %%Duration_String%%">"%TEMP_FOLDER%\header.txt"
-	echo ------------------------------------------------------------------------------------------------------------------------>>"%TEMP_FOLDER%\header.txt"
+	echo ----------------------------------------------------------------------------------------------------------------------->>"%TEMP_FOLDER%\header.txt"
 	"!MEDIAINFOpath!" --full "!SOURCEFILE!" "--Inform=Audio;%%ID%%: %%Language_String%%, %%Format_Commercial%% %%Format_AdditionalFeatures%%, %%Channels%% Channels, %%ChannelPositions_String2%%, %%SamplingRate_String%%, %%BitDepth_String%%, %%BitRate_String%%\r\n">>"%TEMP_FOLDER%\header.txt"
 ) else (
 	:: INFOFILE
 	"!MEDIAINFOpath!" --full "!SOURCEFILE!" "--Inform=Audio;%%Format_Commercial%% %%Format_AdditionalFeatures%%,%%Channels%% Channels,%%ChannelLayout%%|%%BitDepth%%|\r\n">"%TEMP_FOLDER%\info.txt"
 	:: HEADER FILE
 	"!MEDIAINFOpath!" --full "!SOURCEFILE!" "--Inform=General;!SOURCEFILENAME!!SOURCEFILEEXT!, %%Duration_String%%">"%TEMP_FOLDER%\header.txt"
-	echo ------------------------------------------------------------------------------------------------------------------------>>"%TEMP_FOLDER%\header.txt"
+	echo ----------------------------------------------------------------------------------------------------------------------->>"%TEMP_FOLDER%\header.txt"
 	"!MEDIAINFOpath!" --full "!SOURCEFILE!" "--Inform=Audio;%%Format_Commercial%% %%Format_AdditionalFeatures%%, %%Channels%% Channels, %%ChannelPositions_String2%%, %%SamplingRate_String%%, %%BitDepth_String%%, %%BitRate_String%%\r\n">>"%TEMP_FOLDER%\header.txt"
 )
 set "S_HEADERFILE=%TEMP_FOLDER%\header.txt"
@@ -396,11 +429,7 @@ set "S_INFOFILE=%TEMP_FOLDER%\info.txt"
 set "S_TRACKFILE=%TEMP_FOLDER%\track.txt"
 
 :START
-if "!CONTTRUE!"=="TRUE" (
-	set "TRACKCHECK=FALSE"
-) else (
-	set "TRACKCHECK=TRUE"
-)
+if "!CONTTRUE!"=="TRUE" (set "TRACKCHECK=FALSE") else (set "TRACKCHECK=TRUE")
 set "ATMOSFILE=FALSE"
 set "ATMOSTYPE=NONE"
 set "ATMOSDEMUX=FALSE"
@@ -408,33 +437,25 @@ set "SHOWBD="
 
 :: INFO DRP
 if exist "!DRP_FOLDER!\drp.exe" (
-	set "DRP_CTEXT=colortxt 0A "FOUND""
+	set "DRP_CTEXT={0A}FOUND"
 ) else (
-	set "DRP_CTEXT=colortxt 08 "NOT FOUND""
+	set "DRP_CTEXT={08}NOT FOUND"
 	set "DAD=FALSE"
 	set "DAP=FALSE"
 )
 
 :: INFO DAD
-if "%DAD%"=="TRUE" (
-	set "DAD_TEXT=colortxt 0A "ENABLED""
-) else (
-	set "DAD_TEXT=colortxt 08 "DISABLED""
-)
+if "%DAD%"=="TRUE" (set "DAD_TEXT={0A}ENABLED") else (set "DAD_TEXT={08}DISABLED")
 
 ::INFO DAP
-if "%DAP%"=="TRUE" (
-	set "DAP_TEXT=colortxt 0A "ENABLED""
-) else (
-	set "DAP_TEXT=colortxt 08 "DISABLED""
-)
+if "%DAP%"=="TRUE" (set "DAP_TEXT={0A}ENABLED") else (set "DAP_TEXT={08}DISABLED")
 
 :: INFO AVISYNTH
 if exist "%WINDIR%\System32\Avisynth.dll" (
-	set "AS_TEXT=colortxt 0A "FOUND""
+	set "AS_TEXT={0A}FOUND"
 ) else (
-	set "AS_TEXT=colortxt 0C "NOT FOUND""
-	%RED%
+	set "AS_TEXT={0C}NOT FOUND"
+	%HCRED%
 	echo Avisynth Plus not found. Install Avisynth and start again^!
 	%YELLOW%
 	echo https://github.com/AviSynth/AviSynthPlus/releases
@@ -479,15 +500,11 @@ if "%DAD%"=="FALSE" (
 )
 
 ::TRACK CHECK
-if "!TRACKCHECK!"=="TRUE" (
-	set "TRACKCHECK_TEXT=colortxt 0A "VALID""
-) else (
-	set "TRACKCHECK_TEXT=colortxt 0C "INVALID""
-)
+if "!TRACKCHECK!"=="TRUE" (	set "TRACKCHECK_TEXT={0A}VALID") else (set "TRACKCHECK_TEXT={0C}INVALID")
 
 ::SET WAV AUTO BITRATE
 if "%WAVBRAUTO%"=="TRUE" (
-	set "WAVBRAUTO_TEXT=colortxt 0A "ENABLED""
+	set "WAVBRAUTO_TEXT={0A}ENABLED"
 	for /f "tokens=2 delims=| usebackq" %%A in ("!S_TRACKFILE!") do (
 		if "%%A" NEQ "" set "WAVBR_TEXT=%%A"
 		if "!WAVBR_TEXT!" LSS "24" set "WAVBR_TEXT=16"
@@ -495,12 +512,12 @@ if "%WAVBRAUTO%"=="TRUE" (
 		set "WAVBRAUTOINFO_TEXT=AUTO "
 	)
 ) else (
-	set "WAVBRAUTO_TEXT=colortxt 08 "DISABLED""
+	set "WAVBRAUTO_TEXT={08}DISABLED"
 )
 
 ::SET FLAC AUTO BITRATE
 if "%FLACBRAUTO%"=="TRUE" (
-	set "FLACBRAUTO_TEXT=colortxt 0A "ENABLED""
+	set "FLACBRAUTO_TEXT={0A}ENABLED"
 	for /f "tokens=2 delims=| usebackq" %%A in ("!S_TRACKFILE!") do (
 		if "%%A" NEQ "" set "FLACBR_TEXT=%%A"
 		if "!FLACBR_TEXT!" LSS "24" set "FLACBR_TEXT=16"
@@ -509,13 +526,13 @@ if "%FLACBRAUTO%"=="TRUE" (
 		set "FLACBRAUTOINFO_TEXT=AUTO "
 	)
 ) else (
-	set "FLACBRAUTO_TEXT=colortxt 08 "DISABLED""
+	set "FLACBRAUTO_TEXT={08}DISABLED"
 )
 
 ::BEGIN
 cls
 %GREEN%
-echo                                                                                               Copyright (c) 2025 TeamQfG
+echo !HEADER1!
 echo.
 %WHITE%
 echo                                        ====================================
@@ -527,9 +544,9 @@ echo.
 %WHITE%
 echo INFORMATION:
 echo.
-call :colortxt 0E "AVISYNTH FRAMESERVER     : [" & call :!AS_TEXT! & call :colortxt 0E "]." /n
-call :colortxt 0E "DOLBY REFERENCE PLAYER   : [" & call :!DRP_CTEXT! & call :colortxt 0E "], DOLBY ATMOS DEMUXING : [" & call :!DAD_TEXT! & call :colortxt 0E "], DOLBY ATMOS PRIORITY : [" & call :!DAP_TEXT! & call :colortxt 0E "]." /n
-call :colortxt 0E "PCM BITDEPTH AUTO DETECT : [" & call :!WAVBRAUTO_TEXT! & call :colortxt 0E "]," & call :colortxt 0E " FLAC BITDEPTH AUTO DETECT : [" & call :!WAVBRAUTO_TEXT! & call :colortxt 0E "]." /n
+!Cecho! {%_YELLOW%}AVISYNTH FRAMESERVER     : [!AS_TEXT!{%_YELLOW%}]{#}{\n}
+!Cecho! {%_YELLOW%}DOLBY REFERENCE PLAYER   : [!DRP_CTEXT!{%_YELLOW%}], DOLBY ATMOS DEMUXING : [!DAD_TEXT!{%_YELLOW%}], DOLBY ATMOS PRIORITY : [!DAP_TEXT!{%_YELLOW%}]{#}{\n}
+!Cecho! {%_YELLOW%}PCM BITDEPTH AUTO DETECT : [!WAVBRAUTO_TEXT!{%_YELLOW%}], FLAC BITDEPTH AUTO DETECT : [!WAVBRAUTO_TEXT!{%_YELLOW%}]{#}{\n}
 echo.
 
 echo SOURCE INFORMATION:
@@ -752,7 +769,7 @@ if "%CONTTRUE%"=="TRUE" (
 	echo    !TARGET_FOLDER_STRING!
 	echo.
 	%YELLOW%
-	call :colortxt 0E "1. Stream              : %TRACK% [" & call :!TRACKCHECK_TEXT! & call :colortxt 0E "]" /n
+	!Cecho! {%_YELLOW%}1. Stream              : %TRACK% [!TRACKCHECK_TEXT!{%_YELLOW%}]{#}{\n}
 	echo 2. DRC                 : %DRC%
 	echo 3. Codec               : %codec_out_NAME%%SHOWBD% [%BITRATE_NAME%]
 	if "!ATMOSFILE!"=="TRUE" (
@@ -783,8 +800,8 @@ if "%CONTTRUE%"=="TRUE" (
 	echo.
 	echo O. Options
 	echo.
-	%WHITE%
-	echo Change Settings and press [M] to start Muxing^!
+	%HCWHITE%
+	!Cecho! {%HC_WHITE%}Change Settings and press [{%_GREEN%}M{%HC_WHITE%}] to start Muxing^!{#}{\n}
 	if "!ATMOSFILE!"=="TRUE" (
 		CHOICE /C 123456789MSDO /N /M "Select a Letter 1,2,3,4,5,6,7,8,9,[M]ux,[S]ave,[D]efault,[O]ptions"
 	) else (
@@ -822,9 +839,9 @@ if "%CONTTRUE%"=="TRUE" (
 			echo Delay=^%DELAY%>>"%~dp0FSAC_Settings.ini"
 			echo Amplify=^%AMPLIFY%>>"%~dp0FSAC_Settings.ini"
 			echo.
-			%GREEN%
+			%HCGREEN%
 			echo Settings Saved^!
-			%WAIT% 2000
+			TIMEOUT 2 >nul
 		)
 		if errorlevel 10 goto DOITAVISYNTH
 		if errorlevel 9 (
@@ -936,9 +953,9 @@ if "%CONTTRUE%"=="TRUE" (
 			echo Delay=^%DELAY%>>"%~dp0FSAC_Settings.ini"
 			echo Amplify=^%AMPLIFY%>>"%~dp0FSAC_Settings.ini"
 			echo.
-			%GREEN%
+			%HCGREEN%
 			echo Settings Saved^!
-			%WAIT% 2000
+			TIMEOUT 2 >nul
 		)
 		if errorlevel 9 goto DOITAVISYNTH
 		if errorlevel 8 (
@@ -1085,8 +1102,8 @@ if "%CONTTRUE%"=="TRUE" (
 	echo.
 	echo O. Options
 	echo.
-	%WHITE%
-	echo Change Settings and press [M] to start Muxing^!
+	%HCWHITE%
+	!Cecho! {%HC_WHITE%}Change Settings and press [{%_GREEN%}M{%HC_WHITE%}] to start Muxing^!{#}{\n}
 	if "!ATMOS_OPT!"=="TRUE" (
 		CHOICE /C 123456789MSDO /N /M "Select a Letter 1,2,3,4,5,6,7,8,9,[M]ux,[S]ave,[D]efault,[O]ptions"
 	) else (
@@ -1124,9 +1141,9 @@ if "%CONTTRUE%"=="TRUE" (
 			echo Delay=^%DELAY%>>"%~dp0FSAC_Settings.ini"
 			echo Amplify=^%AMPLIFY%>>"%~dp0FSAC_Settings.ini"
 			echo.
-			%GREEN%
+			%HCGREEN%
 			echo Settings Saved^!
-			%WAIT% 2000
+			TIMEOUT 2 >nul
 		)
 		if errorlevel 10 goto DOITAVISYNTH
 		if errorlevel 9 (
@@ -1242,9 +1259,9 @@ if "%CONTTRUE%"=="TRUE" (
 			echo Delay=^%DELAY%>>"%~dp0FSAC_Settings.ini"
 			echo Amplify=^%AMPLIFY%>>"%~dp0FSAC_Settings.ini"
 			echo.
-			%GREEN%
+			%HCGREEN%
 			echo Settings Saved^!
-			%WAIT% 2000
+			TIMEOUT 2 >nul
 		)
 		if errorlevel 9 goto DOITAVISYNTH
 		if errorlevel 8 (
@@ -1354,7 +1371,7 @@ if not exist "!TARGET_FOLDER!" md "!TARGET_FOLDER!"
 set "AVSFILE=!TEMP_FOLDER!\%Password%.avs"
 cls
 %GREEN%
-echo                                                                                               Copyright (c) 2025 TeamQfG
+echo !HEADER1!
 echo.
 %WHITE%
 echo                                        ====================================
@@ -1366,19 +1383,19 @@ echo.
 echo.
 ::TRACK CHECK
 if "!TRACKCHECK!"=="FALSE" (
-	%RED%
+	%HCRED%
 	echo INVALID AUDIO STREAM [!TRACK!]. CHOOSE CORRECT AUDIO STREAM^^!
-	%WAIT% 3000
+	TIMEOUT 3 >nul
 	goto :START
 )
 %WHITE%
 echo SETTINGS:
 echo.
-%CYAN%
+%YELLOW%
 echo    Output Folder:
 echo    !TARGET_FOLDER_STRING!
 echo.
-if "%CONTTRUE%"=="TRUE" call :colortxt 0B "Stream              : %TRACK% [" & call :!TRACKCHECK_TEXT! & call :colortxt 0B "]" /n
+if "%CONTTRUE%"=="TRUE" !Cecho! {%_CYAN%}Stream              : %TRACK% [!TRACKCHECK_TEXT!{%_CYAN%}]{#}{\n}
 echo DRC                 : %DRC%
 echo Codec               : %codec_out_NAME%%SHOWBD% [%BITRATE_NAME%]
 echo Channel Layout      : !C_LAYOUT!
@@ -1594,7 +1611,7 @@ if "%CACHEFILE%"=="TRUE" (
 	set "CACHING=cache=false"
 )
 
-%YELLOW%
+%CYAN%
 if "%LOGFILE%"=="TRUE" (
 	echo ================>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 	echo AVISYNTH SCRIPT^:>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1632,7 +1649,7 @@ if exist "!AVSFILE!" (
 		echo DONE^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 	)
-	%GREEN%
+	%HCGREEN%
 	echo DONE^^!
 	echo.
 ) else (
@@ -1640,7 +1657,7 @@ if exist "!AVSFILE!" (
 		echo ERROR^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 	)
-	%RED%
+	%HCRED%
 	echo ERROR^^!
 	echo.
 	goto :EXIT
@@ -1680,7 +1697,6 @@ if "%Pitch_NAME%"=="NO" set "Pitch_NAME=ORIGINAL"
 if "%Pitch_NAME%"=="YES" set "Pitch_NAME=CORRECTED"
 if "%codec_out_NAME%"=="Mono WAVs" goto :MONOWAVs
 if "%codec_out_NAME%"=="Mono WAVs [ATMOS]" goto :MONOWAVs
-%YELLOW%
 if "%LOGFILE%"=="TRUE" (
 	echo =========>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 	echo ENCODING^:>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1688,23 +1704,27 @@ if "%LOGFILE%"=="TRUE" (
 	echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 )
 if "%THDAC3%"=="TRUE" (
+	%CYAN%
 	echo Demuxing TrueHD Stream. Please Wait ...
 	"!eac3topath!" "!SOURCEFILE!" "!TEMP_FOLDER!\!SOURCEFILENAME!.thd"
+	%WHITE%
 	echo.
 		if "%LOGFILE%"=="TRUE" (
 		echo Demuxing Line: "!eac3topath!" "!SOURCEFILE!" "!TEMP_FOLDER!\!SOURCEFILENAME!.thd">>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 	)
 )
-	
+
+%CYAN%
 echo Encoding. Please Wait ...
+%WHITE%
 if "%LOGFILE%"=="TRUE" (
 	echo Encoding Line: "!FFMPEGpath!" -y !FFMPEG_DRC_SCALE!-i "!AVSFILE!" -strict experimental!DEBUGLINE! -stats!PAN! -c:a !codec_out! -strict -2 "!OUTPUTFILE!.!codec_ext!" >>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 	echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 )
 "!FFMPEGpath!" -y !FFMPEG_DRC_SCALE!-i "!AVSFILE!" -strict experimental!DEBUGLINE! -stats!PAN! -c:a !codec_out! -strict -2 "!OUTPUTFILE!.!codec_ext!"
 if "%ERRORLEVEL%"=="0" (
-	%GREEN%
+	%HCGREEN%
 	echo DONE^^!
 	if "%LOGFILE%"=="TRUE" (
 		echo DONE^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1712,7 +1732,7 @@ if "%ERRORLEVEL%"=="0" (
 	)
 	echo.
 ) else (
-	%RED%
+	%HCRED%
 	echo ERROR^^!
 	if "%LOGFILE%"=="TRUE" (
 		echo ERROR^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1739,8 +1759,9 @@ if "!ATMOSTYPE!"=="PCM" (
 set "OUTPUTTRACKSTRING"=""
 
 if "%THDAC3%"=="TRUE" (
-	%YELLOW%
+	%CYAN%
 	echo Demuxing TrueHD Stream. Please Wait ...
+	%WHITE%
 	"!eac3topath!" "!SOURCEFILE!" "!TEMP_FOLDER!\!SOURCEFILENAME!.thd"
 	echo.
 		if "%LOGFILE%"=="TRUE" (
@@ -1752,8 +1773,9 @@ if "%THDAC3%"=="TRUE" (
 
 if "!CONTTRUE!"=="TRUE" (
 	set "OUTPUTTRACKSTRING="_[Track_!RTRACK!]"
-	%YELLOW%
+	%CYAN%
 	echo Demuxing !ATMOSTYPE_NAME! from container ...
+	%WHITE%
 	if "%LOGFILE%"=="TRUE" (
 		echo ==============================>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo DEMUXING Atmos from Container^:>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1764,7 +1786,7 @@ if "!CONTTRUE!"=="TRUE" (
 	)
 	"!FFMPEGpath!" -y -i "!SOURCEFILE!" -strict experimental!DEBUGLINE! -stats -map 0:!FTRACK! -c copy -strict -2 "!TEMP_FOLDER!\%Password%.!ATMOSTYPE_EXT!"
 	if "%ERRORLEVEL%"=="0" (
-		%GREEN%
+		%HCGREEN%
 		if "%LOGFILE%"=="TRUE" (
 			echo DONE^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 			echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1775,7 +1797,7 @@ if "!CONTTRUE!"=="TRUE" (
 		set "CONTTRUE=FALSE"
 		echo.
 	) else (
-		%RED%
+		%HCRED%
 		if "%LOGFILE%"=="TRUE" (
 			echo ERROR^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 			echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1797,8 +1819,9 @@ set "TEMP_FOLDER=!TEMP_FOLDER:\=\\!"
 
 :: TRUEHD
 if "!ATMOSTYPE!"=="THD" (
-	%YELLOW%
+	%CYAN%
 	echo Demuxing !ATMOSTYPE_NAME! [!ATMOS_CODEC!] to WAV ...
+	%WHITE%
 	if "%LOGFILE%"=="TRUE" (
 		echo ===================================>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo ENCODING Dolby TrueHD ATMOS TO WAV^:>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1809,7 +1832,7 @@ if "!ATMOSTYPE!"=="THD" (
 	)
 	"!DRP_FOLDER!\gst-launch-1.0.exe" -q --gst-plugin-path "!DRP_FOLDER!\gst-plugins" filesrc location="!SOURCEFILE!" ^^! dlbtruehdparse align-major-sync=false ^^! dlbaudiodecbin truehddec-presentation=16 out-ch-config=!ATMOS_CODEC! ^^! audio/x-raw, format=S32LE ^^! wavenc ^^! filesink location="!TEMP_FOLDER!\\%Password%.wav"
 	if "%ERRORLEVEL%"=="0" (
-		%GREEN%
+		%HCGREEN%
 		if "%LOGFILE%"=="TRUE" (
 			echo DONE^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 			echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1820,7 +1843,7 @@ if "!ATMOSTYPE!"=="THD" (
 		set "WAV_WRONG_HEADER=TRUE"
 		echo.
 	) else (
-		%RED%
+		%HCRED%
 		if "%LOGFILE%"=="TRUE" (
 			echo ERROR^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 			echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1835,8 +1858,9 @@ if "!ATMOSTYPE!"=="THD" (
 
 :: EAC3
 if "!ATMOSTYPE!"=="DDP" (
-	%YELLOW%
+	%CYAN%
 	echo Demuxing !ATMOSTYPE_NAME! [!ATMOS_CODEC!] to WAV ...
+	%WHITE%
 	if "%LOGFILE%"=="TRUE" (
 		echo =========================================>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo ENCODING Dolby Digital Plus ATMOS TO WAV^:>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1847,7 +1871,7 @@ if "!ATMOSTYPE!"=="DDP" (
 	)
 	"!DRP_FOLDER!\gst-launch-1.0.exe" -q --gst-plugin-path "!DRP_FOLDER!\gst-plugins" filesrc location="!SOURCEFILE!" ^^! dlbac3parse ^^! dlbaudiodecbin ac3dec-drop-delay=true ac3dec-drc-suppress=true out-ch-config=!ATMOS_CODEC! ^^! audio/x-raw, format=S32LE ^^! wavenc ^^! filesink location="!TEMP_FOLDER!\\%Password%.wav"
 	if "%ERRORLEVEL%"=="0" (
-		%GREEN%
+		%HCGREEN%
 		if "%LOGFILE%"=="TRUE" (
 			echo DONE^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 			echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1858,7 +1882,7 @@ if "!ATMOSTYPE!"=="DDP" (
 		set "WAV_WRONG_HEADER=TRUE"
 		echo.
 	) else (
-		%RED%
+		%HCRED%
 		if "%LOGFILE%"=="TRUE" (
 			echo ERROR^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 			echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1882,12 +1906,13 @@ if "!ATMOSTYPE!!ATMOS_OPT!"=="PCMTRUE" goto :eof
 set "OUTPUTFILE_G=!TEMP_FOLDER!\%Password%_[!ATMOS_CODEC!].w64"
 if "%SAMPLE_RATE%%DELAY%%AMPLIFY%!TIMESTRETCH!"=="ORIGINAL00NO" set "OUTPUTFILE_G=!OUTPUTFILE!.!codec_ext!"
 
-%YELLOW%
+%CYAN%
 if "%SAMPLE_RATE%%DELAY%%AMPLIFY%!TIMESTRETCH!"=="ORIGINAL00NO" (
 	echo Finalising !C_LAYOUT! !THDBR!-Bit %LPCMCont% file ...
 ) else (
 	echo Finalising !C_LAYOUT! !THDBR!-Bit WAV file ...
 )
+%WHITE%
 
 if "%LOGFILE%"=="TRUE" (
 	echo ============================>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1899,7 +1924,7 @@ if "%LOGFILE%"=="TRUE" (
 )
 "!FFMPEGpath!" -ignore_length true -y -i "!SOURCEFILE!" -strict experimental -loglevel error -stats!PAN! -c:a pcm_s!THDBR!le "!OUTPUTFILE_G!"
 if "%ERRORLEVEL%"=="0" (
-	%GREEN%
+	%HCGREEN%
 	echo DONE^^!
 	if "%LOGFILE%"=="TRUE" (
 		echo DONE^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1909,7 +1934,7 @@ if "%ERRORLEVEL%"=="0" (
 	set "SOURCEFILE=!OUTPUTFILE_G!"
 	set "TRACK=-1"
 ) else (
-	%RED%
+	%HCRED%
 	if "%LOGFILE%"=="TRUE" (
 		echo ERROR^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -1924,7 +1949,7 @@ if "%SAMPLE_RATE%%DELAY%%AMPLIFY%!TIMESTRETCH!"=="ORIGINAL00NO" goto :EXIT
 goto :eof
 
 :MONOWAVs
-%YELLOW%
+%CYAN%
 set "ENCODING_LINE=UNKNOWN CHANNEL LAYOUT"
 set "WAV_HEADER_FIX="
 if "%LOGFILE%"=="TRUE" (
@@ -1945,6 +1970,7 @@ if "!ATMOS_MONOWAV!"=="TRUE" (
 ) else (
 	echo Encoding !C_LAYOUT! to !WAVBR_TEXT!-Bit MONO WAVs ...
 )
+%WHITE%
 for /f "tokens=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16 delims=," %%A in ("!ALAYOUT_NAMES!") do set "FL_NAME=%%A" & set "FR_NAME=%%B" & set "FC_NAME=%%C" & set "LFE_NAME=%%D" & set "SL_NAME=%%E" & set "SR_NAME=%%F" & set "BL_NAME=%%G" & set "BR_NAME=%%H" & set "WL_NAME=%%I" & set "WR_NAME=%%J" & set "TFL_NAME=%%K" & set "TFR_NAME=%%L" & set "TSL_NAME=%%M" & set "TSR_NAME=%%N" & set "TBL_NAME=%%O" & set "TBR_NAME=%%P"
 set A_NAMESET=^[!FL_NAME!^]^[!FR_NAME!^]^[!FC_NAME!^]^[!LFE_NAME!^]^[!SL_NAME!^]^[!SR_NAME!^]^[!BL_NAME!^]^[!BR_NAME!^]^[!WL_NAME!^]^[!WR_NAME!^]^[!TFL_NAME!^]^[!TFR_NAME!^]^[!TSL_NAME!^]^[!TSR_NAME!^]^[!TBL_NAME!^]^[!TBR_NAME!^]
 if "!C_LAYOUT!"=="9.1.6 [FL][FR][FC][LFE][SL][SR][BL][BR][WL][WR][TFL][TFR][TSL][TSR][TBL][TBR]" set "ENCODING_LINE="[0:a]channelmap=0[FL];[0:a]channelmap=1[FR];[0:a]channelmap=2[FC];[0:a]channelmap=3[LFE];[0:a]channelmap=4[SL];[0:a]channelmap=5[SR];[0:a]channelmap=6[BL];[0:a]channelmap=7[BR];[0:a]channelmap=8[WL];[0:a]channelmap=9[WR];[0:a]channelmap=10[TFL];[0:a]channelmap=11[TFR];[0:a]channelmap=12[TSL];[0:a]channelmap=13[TSR];[0:a]channelmap=14[TBL];[0:a]channelmap=15[TBR]" -map "[FL]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!FL_NAME!.wav" -map "[FR]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!FR_NAME!.wav" -map "[FC]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!FC_NAME!.wav" -map "[LFE]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!LFE_NAME!.wav" -map "[SL]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!SL_NAME!.wav" -map "[SR]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!SR_NAME!.wav" -map "[BL]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!BL_NAME!.wav" -map "[BR]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!BR_NAME!.wav" -map "[WL]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!WL_NAME!.wav" -map "[WR]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!WR_NAME!.wav" -map "[TFL]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!TFL_NAME!.wav" -map "[TFR]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!TFR_NAME!.wav" -map "[TSL]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!TSL_NAME!.wav" -map "[TSR]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!TSR_NAME!.wav" -map "[TBL]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!TBL_NAME!.wav" -map "[TBR]" -c:a pcm_s!THDBR!le "!OUTPUTFILE!.!TBR_NAME!.wav""
@@ -2049,7 +2075,7 @@ if "%LOGFILE%"=="TRUE" (
 )
 "!FFMPEGpath!" !WAV_HEADER_FIX!-y !FFMPEG_DRC_SCALE!-i "!AVSFILE!" -strict experimental -loglevel error -stats -filter_complex !ENCODING_LINE!
 if "%ERRORLEVEL%"=="0" (
-	%GREEN%
+	%HCGREEN%
 	if "%LOGFILE%"=="TRUE" (
 		echo DONE^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -2057,7 +2083,7 @@ if "%ERRORLEVEL%"=="0" (
 	echo DONE^^!
 	echo.
 ) else (
-	%RED%
+	%HCRED%
 	if "%LOGFILE%"=="TRUE" (
 		echo ERROR^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -2073,7 +2099,7 @@ set "PCM_10CHANNEL=TRUE"
 goto :eof
 
 :DIALNORM
-%YELLOW%
+%CYAN%
 set "ATMOS_DIALNORM=UNKNOWN"
 set "AMPLIFY=0"
 
@@ -2084,6 +2110,7 @@ if "%LOGFILE%"=="TRUE" (
 	echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 )
 echo Analysing DialNorm ...
+%WHITE%
 "!eac3topath!" "!SOURCEFILE!" -log=NUL>"!TEMP_FOLDER!\DialNorm.txt"
 if "!CONTTRUE!"=="FALSE" set "DNtemp=!TEMP_FOLDER!\DialNorm.txt"
 if "!CONTTRUE!"=="TRUE" findstr /C:"!RTRACK!: " "!TEMP_FOLDER!\DialNorm.txt">"!TEMP_FOLDER!\DialNormCont.txt"
@@ -2134,29 +2161,28 @@ if "!ATMOS_DIALNORM!" NEQ "31" (
 )
 	
 if "!DNORMFOUND!"=="TRUE" (
-	%YELLOW%
 	if "%LOGFILE%"=="TRUE" (
 		echo DialNorm found and Amplify set^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 	)		
-	%GREEN%
+	%HCGREEN%
 	echo DONE^^!
 	echo.
 ) else (
-	%YELLOW%
 	if "%LOGFILE%"=="TRUE" (
 		echo DialNorm not found, leave untouched^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 	)		
-	%GREEN%
+	%HCGREEN%
 	echo DONE^^!
 	echo.
 )
 goto :eof
 
 :HEADERFIX
-%YELLOW%
+%CYAN%
 echo Fixing Header. Please wait ...
+%WHITE%
 if "%LOGFILE%"=="TRUE" (
 	echo =============>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 	echo HEADER FIX^:>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -2168,7 +2194,7 @@ if "%LOGFILE%"=="TRUE" (
 "!eac3topath!" "!SOURCEFILE!" "!TEMP_FOLDER!\!SOURCEFILENAME!_[HEADER_FIXED]!SOURCEFILEEXT!" -keepDialnorm -log=NUL
 set "SOURCEFILE=!TEMP_FOLDER!\!SOURCEFILENAME!_[HEADER_FIXED]!SOURCEFILEEXT!"
 if "%ERRORLEVEL%"=="0" (
-	%GREEN%
+	%HCGREEN%
 	if "%LOGFILE%"=="TRUE" (
 		echo DONE^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -2177,7 +2203,7 @@ if "%ERRORLEVEL%"=="0" (
 	echo.
 	goto :eof
 ) else (
-	%RED%
+	%HCRED%
 	if "%LOGFILE%"=="TRUE" (
 		echo ERROR^^!>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 		echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
@@ -2190,7 +2216,7 @@ if "%ERRORLEVEL%"=="0" (
 :HELP
 cls
 %GREEN%
-echo                                                                                               Copyright (c) 2025 TeamQfG
+echo !HEADER1!
 echo.
 %WHITE%
 echo                                        ====================================
@@ -2199,40 +2225,49 @@ echo                                                 FS AUDIO CONVERTER
 %WHITE%
 echo                                        ====================================
 echo.
+%HCWHITE%
 echo FS Audio Converter is a FrameServer based CLI Tool for audio encoding. 
 echo You need an installed Avisynth+ Frameserver for using this tool.
 echo Encoding engine is FFMPEG (for Atmos files Dolby Reference Player + FFMPEG). 
 echo.
-call :colortxt 06 "USAGE:" /n
-echo     %~n0 ^"^<SOURCEFILE^>^" ^[OPTIONAL ^<SWITCHES^>^]
+!Cecho! {%HC_GREEN%}USAGE:{#}{\n}
+echo     %~n0 "<SOURCEFILE>" [OPTIONAL ^<SWITCHES^>]
 echo.
-call :colortxt 06 "SWITCHES:" /n
-call :colortxt 0F "    --INDEX-<Index Number>" & call :colortxt 0E "   Set Index if container is sourcefile." /n
-call :colortxt 0F "    --DRC-<ON|OFF>" & call :colortxt 0E "   Set Dynamic Range Compression On or Off." /n
-call :colortxt 0F "    --TEMPO-<Adjustments>" & call :colortxt 0E "   Slow-down or Speed-up audio. Set one of the following Tempo Adjustments." /n
-call :colortxt 0F "            <25to23976|25to23976p>" & call :colortxt 0E "   Slow-down 25 FPS to 23,976 FPS. "p" means with pitch correctur." /n
-call :colortxt 0F "            <25to24|25to24p>" & call :colortxt 0E "         Slow-down 25 FPS to 24 FPS. "p" means with pitch correctur." /n
-call :colortxt 0F "            <24to23976|24to23976p>" & call :colortxt 0E "   Slow-down 24 FPS to 23,976 FPS. "p" means with pitch correctur." /n
-call :colortxt 0F "            <23976to25|23976to25p>" & call :colortxt 0E "   Speed-up 23,976 FPS to 25 FPS. "p" means with pitch correctur." /n
-call :colortxt 0F "            <24to25|24to25p>" & call :colortxt 0E "         Speed-up 24 FPS to 25 FPS. "p" means with pitch correctur." /n
-call :colortxt 0F "            <23976to24|23976to24p>" & call :colortxt 0E "   Speed-up 23,976 FPS to 24 FPS. "p" means with pitch correctur." /n
-call :colortxt 0F "    --PITCH-<Adjustments>" & call :colortxt 0E "   Change pitch only. Set one of the following Pitch Adjustments." /n
-call :colortxt 0F "            <25to23976|25to24|23976to25|24to25>" & call :colortxt 0E "   Do not use --TEMPO and --PITCH together!." /n
-call :colortxt 0F "    --CODEC-<Audio Codec>" & call :colortxt 0E "   Set one of the following Audio Codecs." /n
-call :colortxt 0F "            <LPCM|MONOWAVs|FLAC|AC3|EAC3|AAC>" & call :colortxt 0E "   Available output audio codecs." /n
-call :colortxt 0F "            <ATMOS-LPCM|ATMOS-MONOWAVs>" & call :colortxt 0E "   Dolby Atmos Codecs. Needed installed Dolby Reference Player" /n
-call :colortxt 0F "    --DELAY-<Delay in ms>" & call :colortxt 0E "   Set delay for audio track. for negative delay use -." /n
-call :colortxt 0F "    --AMPLIFY-<AMPLIFY in dB>" & call :colortxt 0E "   Set amplify. for negative amplify use -. Also available switches:" /n
-call :colortxt 0F "              <DIALNORM|NORMALIZE>" & call :colortxt 0E "   DIALNORM sets audio amplify to -31dB, NORMALIZE sets highest peak to -0dB" /n
-call :colortxt 0F "    --DIR-<Path to output directory>" & call :colortxt 0E "   Set output directory without ""." /n
+!Cecho! {%HC_GREEN%}SWITCHES:{#}{\n}
+echo --INDEX-^<Index Number^>            Set Index if container is sourcefile.
+%HCYELLOW%
+echo --DRC-^<ON^|OFF^>                    Set Dynamic Range Compression On or Off.
+%HCWHITE%
+echo --TEMPO-^<Adjustments^>             Slow-down or Speed-up audio. Set one of the following Tempo Adjustments.
+echo         ^<25to23976^|25to23976p^>       Slow-down 25 FPS to 23,976 FPS. "p" means with pitch correctur.
+echo         ^<25to24^|25to24p^>             Slow-down 25 FPS to 24 FPS. "p" means with pitch correctur.
+echo         ^<24to23976^|24to23976p^>       Slow-down 24 FPS to 23,976 FPS. "p" means with pitch correctur.
+echo         ^<23976to25^|23976to25p^>       Speed-up 23,976 FPS to 25 FPS. "p" means with pitch correctur.
+echo         ^<24to25^|24to25p^>             Speed-up 24 FPS to 25 FPS. "p" means with pitch correctur.
+echo         ^<23976to24^|23976to24p^>       Speed-up 23,976 FPS to 24 FPS. "p" means with pitch correctur.
+%HCYELLOW%
+echo --PITCH-^<Adjustments^>             Change pitch only. Set one of the following Pitch Adjustments.
+echo         ^<25to23976^|25to24^|23976to25^|24to25^>    Do not use --TEMPO and --PITCH together!.
+%HCWHITE%
+echo --CODEC-^<Audio Codec^>             Set one of the following Audio Codecs.
+echo         ^<LPCM^|MONOWAVs^|FLAC^|AC3^|EAC3^|AAC^>      Available output audio codecs.
+echo         ^<ATMOS-LPCM^|ATMOS-MONOWAVs^>            Dolby Atmos Codecs. Needed installed Dolby Reference Player
+%HCYELLOW%
+echo --DELAY-^<Delay in ms^>             Set delay for audio track. for negative delay use -.
+%HCWHITE%
+echo --AMPLIFY-^<AMPLIFY in dB^>         Set amplify. for negative amplify use -. Also available switches:
+echo           ^<DIALNORM^|NORMALIZE^>         DIALNORM sets audio amplify to -31dB, NORMALIZE sets highest peak to -0dB
+%HCYELLOW%
+echo --DIR-^<Path to output directory^>  Set output directory without "".
 echo.
-call :colortxt 06 "EXAMPLES:" /n
-call :colortxt 0F "    %~n0 "C:\MyMovie.mkv"" & call :colortxt 0E " Open file with CLI Gui." /n
-call :colortxt 0F "    %~n0 "C:\MyMovie.mkv" --index-3 --tempo-25to24 --amplify-dialnorm" /n
-call :colortxt 0F "    %~n0 "C:\MyMovie.mkv" --index-3 --delay--10 --codec-monopcm --dir-C:\Output" /n
-call :colortxt 0F "    %~n0 "C:\MyMovie.mkv" --index-2 --DRC-off --codec-flac --dir-C:\Output" /n
+!Cecho! {%HC_GREEN%}EXAMPLES:{#}{\n}
+!Cecho! {%HC_WHITE%}%~n0 "C:\MyMovie.mkv" {%HC_YELLOW%}Open file with CLI Gui{#}{\n}
+%HCWHITE%
+echo %~n0 "C:\MyMovie.mkv" --index-3 --tempo-25to24 --amplify-dialnorm
+echo %~n0 "C:\MyMovie.mkv" --index-3 --delay--10 --codec-monopcm --dir-C:\Output
+echo %~n0 "C:\MyMovie.mkv" --index-2 --DRC-off --codec-flac --dir-C:\Output
 echo.
-echo For unused switches the tool uses standard settings.
+!Cecho! {%HC_YELLOW%}For unused switches the tool uses standard settings.{#}{\n}
 echo.
 cmd.exe /s /k
 exit
@@ -2241,11 +2276,11 @@ exit
 %WHITE%
 echo EXITING:
 echo.
-%YELLOW%
+%CYAN%
 echo Cleaning Temp Files. Please Wait ...
 RD /S /Q "!TEMP_FOLDER!">nul
 if exist "!TOOLSpath!\log.txt" del "!TOOLSpath!\log.txt"
-%GREEN%
+%HCGREEN%
 echo DONE^^!
 for /F "Tokens=1,2 Delims=:" %%A IN ('echo %time%') DO set "TimeEnd=%%A^:%%B">nul
 set "DateEnd=%DATE%"
@@ -2260,7 +2295,7 @@ if "%LOGFILE%"=="TRUE" (
 )
 setlocal DisableDelayedExpansion
 ENDLOCAL
-%WHITE%
+%HCWHITE%
 if "%EXTERNSTART%"=="TRUE" goto :eof
 if "%AUTOMODE%"=="OFF" TIMEOUT 30
 exit
@@ -2288,59 +2323,3 @@ set TempVar=%TempVar%!PasswordChars:~%i%,1!
 if not "%Length%"=="%PasswordLength%" goto GenerateLoop
 set %1=%TempVar%
 goto :eof
-
-:colortxt
-setlocal enableDelayedExpansion
-:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-	
-:colorPrint Color  Str  [/n]
-setlocal
-set "s=%~2"
-call :colorPrintVar %1 s %3
-exit /b
-
-:colorPrintVar  Color  StrVar  [/n]
-if not defined DEL call :initColorPrint
-setlocal enableDelayedExpansion
-pushd .
-':
-cd \
-set "s=!%~2!"
-:: The single blank line within the following IN() clause is critical - DO NOT REMOVE
-for %%n in (^"^
-
-^") do (
-  set "s=!s:\=%%~n\%%~n!"
-  set "s=!s:/=%%~n/%%~n!"
-  set "s=!s::=%%~n:%%~n!"
-)
-for /f delims^=^ eol^= %%s in ("!s!") do (
-  if "!" equ "" setlocal disableDelayedExpansion
-  if %%s==\ (
-    findstr /a:%~1 "." "\'" nul
-    <nul set /p "=%DEL%%DEL%%DEL%"
-  ) else if %%s==/ (
-    findstr /a:%~1 "." "/.\'" nul
-    <nul set /p "=%DEL%%DEL%%DEL%%DEL%%DEL%"
-  ) else (
-    >colorPrint.txt (echo %%s\..\')
-    findstr /a:%~1 /f:colorPrint.txt "."
-    <nul set /p "=%DEL%%DEL%%DEL%%DEL%%DEL%%DEL%%DEL%"
-  )
-)
-if /i "%~3"=="/n" echo(
-popd
-exit /b
-
-:initColorPrint
-for /f %%A in ('"prompt $H&for %%B in (1) do rem"') do set "DEL=%%A %%A"
-<nul >"%temp%\'" set /p "=."
-subst ': "%temp%" >nul
-exit /b
-
-
-:cleanupColorPrint
-2>nul del "%temp%\'"
-2>nul del "%temp%\colorPrint.txt"
->nul subst ': /d
-exit /b
