@@ -6,10 +6,6 @@ set HEADER2=powered by Avisynth / FFMPEG                                        
 TITLE FS Audio Converter OPTIONS [Team QfG] v%VERSION%
 set DESIGN=STANDARD
 
-set PasswordChars=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
-set PasswordLength=5
-call :CreatePassword Password
-
 setlocal EnableDelayedExpansion
 
 rem --- Hardcoded settings. Can be changed manually ---
@@ -775,6 +771,9 @@ if errorlevel 1 (
 goto :MISC_MENU
 
 :CUSTOM_SHELL_EXTENSION_MENU
+set PasswordChars=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
+set PasswordLength=5
+call :CreatePassword Password
 cls
 if "!USR_SE_ORDER!"=="NONE" (
 	set "ORDERSTRING="
@@ -865,7 +864,7 @@ if "!SWITCHOK!!NAMEOK!" NEQ "TRUETRUE" (
 )
 %HCWHITE%
 !Cecho! {%HC_WHITE%}Change Settings and Press [{%HC_GREEN%}S{%HC_WHITE%}]AVE, [{%HC_GREEN%}D{%HC_WHITE%}]ELETE or [{%HC_GREEN%}E{%HC_WHITE%}]XIT WITHOUT SAVE.{#}{\n}
-CHOICE /C 123SDE /N /M "Select a Letter 1,2,[S]AVE,[D]ELETE4,[E]XIT"
+CHOICE /C 123SDE /N /M "Select a Letter 1,2,[S]AVE,[D]ELETE,[E]XIT"
 if errorlevel 6 goto :MAINMENU
 if errorlevel 5 (
 	reg delete "HKCR\*\Shell\MenuFSAUDIOCUSTOMCONVERTER" /f>nul 2>&1
