@@ -41,6 +41,7 @@ set "ATMOS_CODEC="
 set "ATMOS_MONOWAV=FALSE"
 set "ATMOS_OPT=FALSE"
 set "C_LAYOUT=UNKNOWN"
+set "DOWNMIX=FALSE"
 set "LPCMCont=WAV"
 set "SOURCEFILE=%~dpnx1"
 set "SOURCEFILE_ORIG=!SOURCEFILE!"
@@ -470,9 +471,11 @@ if exist "%WINDIR%\System32\Avisynth.dll" (
 if "!CONTTRUE!"=="FALSE" (
 	set "S_TRACKFILE=!S_INFOFILE!"
 	FOR /F "delims=" %%A IN ('findstr /C:"with Dolby Atmos" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE"
-	FOR /F "delims=" %%A IN ('findstr /C:"16 Channels" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE"
-	FOR /F "delims=" %%A IN ('findstr /C:"12 Channels" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE"
-	FOR /F "delims=" %%A IN ('findstr /C:"10 Channels" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE"
+	FOR /F "delims=" %%A IN ('findstr /C:"16 Channels" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE" & set "DOWNMIX=TRUE"
+	FOR /F "delims=" %%A IN ('findstr /C:"12 Channels" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE" & set "DOWNMIX=TRUE"
+	FOR /F "delims=" %%A IN ('findstr /C:"10 Channels" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE" & set "DOWNMIX=TRUE"
+	FOR /F "delims=" %%A IN ('findstr /C:"8 Channels" "!S_TRACKFILE!"') DO set "DOWNMIX=TRUE"
+	FOR /F "delims=" %%A IN ('findstr /C:"7 Channels" "!S_TRACKFILE!"') DO set "DOWNMIX=TRUE"
 
 	FOR /F "delims=" %%A IN ('findstr /C:"Dolby TrueHD" "!S_TRACKFILE!"') DO set "ATMOSTYPE=THD"
 	FOR /F "delims=" %%A IN ('findstr /C:"Dolby Digital Plus" "!S_TRACKFILE!"') DO set "ATMOSTYPE=DDP"
@@ -485,9 +488,11 @@ if "!CONTTRUE!"=="TRUE" (
 	FOR /F "delims=" %%A IN ('findstr /C:"!TRACK!:" "!S_TRACKFILE!"') DO set "TRACKCHECK=TRUE"
 	
 	FOR /F "delims=" %%A IN ('findstr /C:"with Dolby Atmos" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE"
-	FOR /F "delims=" %%A IN ('findstr /C:"16 Channels" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE"
-	FOR /F "delims=" %%A IN ('findstr /C:"12 Channels" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE"
-	FOR /F "delims=" %%A IN ('findstr /C:"10 Channels" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE"
+	FOR /F "delims=" %%A IN ('findstr /C:"16 Channels" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE" & set "DOWNMIX=TRUE"
+	FOR /F "delims=" %%A IN ('findstr /C:"12 Channels" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE" & set "DOWNMIX=TRUE"
+	FOR /F "delims=" %%A IN ('findstr /C:"10 Channels" "!S_TRACKFILE!"') DO set "ATMOSFILE=TRUE" & set "DOWNMIX=TRUE"
+	FOR /F "delims=" %%A IN ('findstr /C:"8 Channels" "!S_TRACKFILE!"') DO set "DOWNMIX=TRUE"
+	FOR /F "delims=" %%A IN ('findstr /C:"7 Channels" "!S_TRACKFILE!"') DO set "DOWNMIX=TRUE"
 
 	FOR /F "delims=" %%A IN ('findstr /C:"Dolby TrueHD" "!S_TRACKFILE!"') DO set "ATMOSTYPE=THD"
 	FOR /F "delims=" %%A IN ('findstr /C:"Dolby Digital Plus" "!S_TRACKFILE!"') DO set "ATMOSTYPE=DDP"
@@ -1695,7 +1700,10 @@ echo TimeStretch(!Pitch!=!Tempo!)>>"!AVSFILE!"
 goto :eof
 
 :ENCODING
+set "FFDM="
 if not exist "!TARGET_FOLDER!" md "!TARGET_FOLDER!"
+if "!DOWNMIX!!codec_out_NAME!"=="TRUEAC-3" set "FFDM= -ac 6"
+if "!DOWNMIX!!codec_out_NAME!"=="TRUEeAC-3" set "FFDM= -ac 6"
 if "%Pitch_NAME%"=="NO" set "Pitch_NAME=ORIGINAL"
 if "%Pitch_NAME%"=="YES" set "Pitch_NAME=CORRECTED"
 if "%codec_out_NAME%"=="Mono WAVs" goto :MONOWAVs
@@ -1722,10 +1730,10 @@ if "%THDAC3%"=="TRUE" (
 echo Encoding. Please Wait ...
 %WHITE%
 if "%LOGFILE%"=="TRUE" (
-	echo Encoding Line: "!FFMPEGpath!" -y !FFMPEG_DRC_SCALE!-i "!AVSFILE!" -strict experimental!DEBUGLINE! -stats!PAN! -c:a !codec_out! -strict -2 "!OUTPUTFILE!.!codec_ext!" >>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
+	echo Encoding Line: "!FFMPEGpath!" -y !FFMPEG_DRC_SCALE!-i "!AVSFILE!" -strict experimental!DEBUGLINE! -stats!PAN!!FFDM! -c:a !codec_out! -strict -2 "!OUTPUTFILE!.!codec_ext!" >>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 	echo.>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
 )
-"!FFMPEGpath!" -y !FFMPEG_DRC_SCALE!-i "!AVSFILE!" -strict experimental!DEBUGLINE! -stats!PAN! -c:a !codec_out! -strict -2 "!OUTPUTFILE!.!codec_ext!"
+"!FFMPEGpath!" -y !FFMPEG_DRC_SCALE!-i "!AVSFILE!" -strict experimental!DEBUGLINE! -stats!PAN!!FFDM! -c:a !codec_out! -strict -2 "!OUTPUTFILE!.!codec_ext!"
 if "%ERRORLEVEL%"=="0" (
 	%HCGREEN%
 	echo DONE^^!
