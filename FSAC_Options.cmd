@@ -1,5 +1,5 @@
 @echo off & setlocal
-mode con cols=200lines=63
+mode con cols=200lines=65
 set VERSION=0.71 beta
 set HEADER1=powered by Avisynth / FFMPEG                                                               GNU License (GPL) 2021-2025
 set HEADER2=powered by Avisynth / FFMPEG                                                                                                                                                GNU License (GPL) 2021-2025
@@ -259,15 +259,17 @@ echo 3. Create Shell Extensions
 echo 4. Delete Shell Extensions
 echo 5. Custom Shell Extensions
 echo.
-%Cecho% {%HC_WHITE%}E. DESIGN [{%HC_YELLOW%}!DESIGN_STRING!{%HC_WHITE%}]{#}{\n}
+%Cecho% {%HC_WHITE%}6. DESIGN [{%HC_YELLOW%}!DESIGN_STRING!{%HC_WHITE%}]{#}{\n}
 echo.
 %HCGREEN%
 echo D. SET DEFAULT SETTINGS
 echo S. SAVE SETTINGS
+echo E. EXIT
 echo.
 %HCWHITE%
-!Cecho! {%HC_WHITE%}Change Settings and Press [{%HC_GREEN%}S{%HC_WHITE%}]AVE or [{%HC_GREEN%}D{%HC_WHITE%}]EFAULT.{#}{\n}
-CHOICE /C OTRL12345EDS /N /M "Select a Letter O,T,R,L,1,2,3,4,5,D[E]SIGN,[D]EFAULT,[S]AVE"
+!Cecho! {%HC_WHITE%}Change Settings and Press [{%HC_GREEN%}S{%HC_WHITE%}]AVE, [{%HC_GREEN%}D{%HC_WHITE%}]EFAULT or [{%HC_GREEN%}E{%HC_WHITE%}]XIT.{#}{\n}
+CHOICE /C OTRL123456DSE /N /M "Select a Letter O,T,R,L,1,2,3,4,5,6,[D]EFAULT,[S]AVE,[E]XIT"
+if errorlevel 13 goto :EXIT
 if errorlevel 12 (
 	(
 	echo          FS AUDIO CONVERTER OPTIONS CONFIG File.

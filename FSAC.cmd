@@ -2,7 +2,7 @@
 mode con cols=120 lines=60
 chcp 1252>nul
 set "VERSION=--N.A.-- INCORRECTLY INSTALLED"
-set "HEADER1=File "%~dp0DDVT_OPTIONS.cmd" missing! Script works not correctly!"
+set "HEADER1=File "%~dp0FSAC_OPTIONS.cmd" missing! Script works not correctly!"
 FOR /F "tokens=2 delims==" %%A IN ('findstr /C:"HEADER1=" "%~dp0FSAC_OPTIONS.cmd"') DO set "HEADER1=%%A"
 FOR /F "tokens=2 delims==" %%A IN ('findstr /C:"VERSION=" "%~dp0FSAC_OPTIONS.cmd"') DO set "VERSION=%%A"
 TITLE FS Audio Converter [Team QfG] v%VERSION%
@@ -429,6 +429,9 @@ set "S_INFOFILE=%TEMP_FOLDER%\info.txt"
 set "S_TRACKFILE=%TEMP_FOLDER%\track.txt"
 
 :START
+mode con cols=120 lines=60
+chcp 1252>nul
+TITLE FS Audio Converter [Team QfG] v%VERSION%
 if "!CONTTRUE!"=="TRUE" (set "TRACKCHECK=FALSE") else (set "TRACKCHECK=TRUE")
 set "ATMOSFILE=FALSE"
 set "ATMOSTYPE=NONE"
