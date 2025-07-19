@@ -1,6 +1,6 @@
 @echo off & setlocal
 mode con cols=200lines=65
-set VERSION=0.71 beta
+set VERSION=0.71 (Fix#4) beta
 set HEADER1=powered by Avisynth / FFMPEG                                                               GNU License (GPL) 2021-2025
 set HEADER2=powered by Avisynth / FFMPEG                                                                                                                                                GNU License (GPL) 2021-2025
 TITLE FS Audio Converter OPTIONS [Team QfG] v%VERSION%
@@ -9,7 +9,7 @@ set DESIGN=STANDARD
 setlocal EnableDelayedExpansion
 
 rem --- Hardcoded settings. Can be changed manually ---
-set "Cecho=%~dp0tools\cecho_x64.exe" rem Path to cecho_x64.exe
+set "Cecho="%~dp0tools\cecho_x64.exe"" rem Path to cecho_x64.exe
 set "sfkpath=%~dp0tools\sfk.exe" rem Path to sfk.exe
 
 :PREFETCH
@@ -120,7 +120,6 @@ IF EXIST "%~dp0FSAC_Options.ini" (
 	FOR /F "delims=" %%A IN ('findstr /C:"DESIGN=" "%~dp0FSAC_Options.ini"') DO (
 		set "DESIGN=%%A"
 		set "DESIGN=!DESIGN:~7!"
-		FOR /F "usebackq" %%A IN ('"!DESIGN!"') DO set "DESIGN_STRING=%%~nA">nul 2>&1
 	)
 )
 
@@ -154,7 +153,7 @@ set "_WHITE=0F"
 
 if "!DESIGN!" NEQ "STANDARD" (
 	call "!DESIGN!"
-	FOR /F "usebackq" %%A IN ('"!DESIGN!"') DO set "DESIGN_STRING=%%~nA
+	for %%f in (!DESIGN!) do set "DESIGN_STRING=%%~nf">nul 2>&1
 ) else (
 	set "DESIGN_STRING=STANDARD"
 )
@@ -259,7 +258,7 @@ echo 3. Create Shell Extensions
 echo 4. Delete Shell Extensions
 echo 5. Custom Shell Extensions
 echo.
-%Cecho% {%HC_WHITE%}6. DESIGN [{%HC_YELLOW%}!DESIGN_STRING!{%HC_WHITE%}]{#}{\n}
+!Cecho! {%HC_WHITE%}6. DESIGN [{%HC_YELLOW%}!DESIGN_STRING!{%HC_WHITE%}]{#}{\n}
 echo.
 %HCGREEN%
 echo D. SET DEFAULT SETTINGS
@@ -362,7 +361,8 @@ if errorlevel 10 (
 	echo.
 	!Cecho! {%HC_WHITE%}Drag 'n' Drop {%_GREEN%}DESIGN File {%HC_WHITE%}here and press ENTER:{#}{\n}
 	%GREEN%
-	set /p "DESIGN=" || set "DESIGN=STANDARD"
+	set /p "DESIGNINPUT=" || set "DESIGN=STANDARD"
+	if "!DESIGNINPUT!" NEQ "STANDARD" for %%f in (!DESIGNINPUT!) do set "DESIGN=%%~dpnxf">nul 2>&1
 )
 if errorlevel 9 (
 	call :CUSTOM_SHELL_EXTENSION_MENU

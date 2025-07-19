@@ -15,7 +15,7 @@ call :CreatePassword Password
 setlocal EnableDelayedExpansion
 
 ::Change to your liking
-set "Cecho=%~dp0tools\cecho_x64.exe"
+set "Cecho="%~dp0tools\cecho_x64.exe""
 set "sfkpath=%~dp0tools\sfk.exe"
 set "eac3topath=%~dp0tools\eac3to.exe"
 set "FFMPEGpath=%~dp0tools\ffmpeg.exe"
