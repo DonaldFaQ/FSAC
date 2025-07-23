@@ -1,6 +1,6 @@
 @echo off & setlocal
 mode con cols=200lines=65
-set VERSION=0.71 (Fix#4) beta
+set VERSION=0.71.1 "Innocence proves nothing" beta
 set HEADER1=powered by Avisynth / FFMPEG                                                               GNU License (GPL) 2021-2025
 set HEADER2=powered by Avisynth / FFMPEG                                                                                                                                                GNU License (GPL) 2021-2025
 TITLE FS Audio Converter OPTIONS [Team QfG] v%VERSION%
@@ -9,7 +9,7 @@ set DESIGN=STANDARD
 setlocal EnableDelayedExpansion
 
 rem --- Hardcoded settings. Can be changed manually ---
-set "Cecho="%~dp0tools\cecho_x64.exe"" rem Path to cecho_x64.exe
+set "Cecho=%~dp0tools\cecho_x64.exe" rem Path to cecho_x64.exe
 set "sfkpath=%~dp0tools\sfk.exe" rem Path to sfk.exe
 
 :PREFETCH
@@ -38,6 +38,8 @@ set "USR_SE_ORDER=NONE"
 set "SHORTFILENAMES_ORIG=%SHORTFILENAMES%"
 set "ALAYOUT=[FL][FR][FC][LFE][SL][SR][BL][BR][WL][WR][TFL][TFR][TSL][TSR][TBL][TBR]"
 set "ALAYOUT_NAMES=FL,FR,FC,LFE,SL,SR,BL,BR,WL,WR,TFL,TFR,TSL,TSR,TBL,TBR"
+set "PasswordChars=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+set "PasswordLength=5"
 
 ::Check for INI and Load Settings
 IF EXIST "%~dp0FSAC_Options.ini" (
@@ -150,10 +152,9 @@ set "_BLUE=09"
 set "_MAGENTA=0D"
 set "_CYAN=0B"
 set "_WHITE=0F"
-
 if "!DESIGN!" NEQ "STANDARD" (
 	call "!DESIGN!"
-	for %%f in (!DESIGN!) do set "DESIGN_STRING=%%~nf">nul 2>&1
+	for %%f in ("!DESIGN!") do set "DESIGN_STRING=%%~nf">nul 2>&1
 ) else (
 	set "DESIGN_STRING=STANDARD"
 )
@@ -162,11 +163,11 @@ if /i "%AMPLIFY%"=="NORMALIZE" set "SHOWAMP=NORMALIZED"
 if /i "%AMPLIFY%"=="DIALNORM" set "SHOWAMP=DIALNORM -31 dB"
 if "%AMPLIFY%"=="0" set "SHOWAMP=ORIGINAL"
 set "WAVBRAUTO=FALSE"
-echo !WAVBR! |findstr /I "AUTO" && set "WAVBRAUTO=TRUE"
+echo !WAVBR! |findstr /I "AUTO" >nul 2>&1 && set "WAVBRAUTO=TRUE" >nul 2>&1
 set "WAVBR_TEXT=!WAVBR:~,2!"
 if "!WAVBRAUTO!"=="TRUE" (set "WAVBRAUTO_TEXT={0A}ENABLED") else (set "WAVBRAUTO_TEXT={08}DISABLED")
 set "FLACBRAUTO=FALSE"
-echo !FLACBR! |findstr /I "AUTO" && set "FLACBRAUTO=TRUE"
+echo !FLACBR! |findstr /I "AUTO" >nul 2>&1 && set "FLACBRAUTO=TRUE" >nul 2>&1
 set "FLACBR_TEXT=!FLACBR:~,2!"
 if "!FLACBRAUTO!"=="TRUE" (set "FLACBRAUTO_TEXT={0A}ENABLED") else (set "FLACBRAUTO_TEXT={08}DISABLED")
 if "!TARGET_FOLDER!"=="" set "TARGET_FOLDER=SAME AS SOURCE"
@@ -205,7 +206,7 @@ echo.
 %CYAN%
 echo OUTPUT FOLDER          = !TARGET_FOLDER_STRING!
 echo TEMP FOLDER            = !TEMP_FOLDER!\^<CODE^>
-!Cecho! {%_CYAN%}DOLBY REFERENCE PLAYER = !DRP_FOLDER! {%_CYAN%}[!DRP_CTEXT!{%_CYAN%}]{#}{\n}
+"!Cecho!" {%_CYAN%}DOLBY REFERENCE PLAYER = !DRP_FOLDER! {%_CYAN%}[!DRP_CTEXT!{%_CYAN%}]{#}{\n}
 %WHITE%
 echo.
 echo == SETTINGS ===========================================================================================================================================================================================
@@ -217,8 +218,8 @@ echo.
 echo == BITRATES ===========================================================================================================================================================================================
 echo.
 %YELLOW%
-!Cecho! {%_YELLOW%}WAV                    = !WAVBR_TEXT!-Bit / Auto Bitdepth [!WAVBRAUTO_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}FLAC                   = !FLACBR_TEXT!-Bit / Auto Bitdepth [!FLACBRAUTO_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}WAV                    = !WAVBR_TEXT!-Bit / Auto Bitdepth [!WAVBRAUTO_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}FLAC                   = !FLACBR_TEXT!-Bit / Auto Bitdepth [!FLACBRAUTO_TEXT!{%_YELLOW%}]{#}{\n}
 echo THD Atmos              = !THDBR!-Bit
 echo AC-3                   = !AC3BR! k^/bs
 echo eAC-3                  = !eAC3BR! k^/bs
@@ -228,15 +229,15 @@ echo.
 echo == MISC ===============================================================================================================================================================================================
 echo.
 %YELLOW%
-!Cecho! {%_YELLOW%}Dolby Atmos Demuxing   = [!DAD_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}Dolby Atmos Priority   = [!DAP_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Dolby Atmos Demuxing   = [!DAD_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Dolby Atmos Priority   = [!DAP_TEXT!{%_YELLOW%}]{#}{\n}
 echo Dolby Atmos Nameset    = !A_NAMESET!
-!Cecho! {%_YELLOW%}LPCM Container         = [{0A}!LPCMCont!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}Standard Loudness      = [{0A}!SHOWAMP!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}Short Filenames        = [!SHORTFILENAMES_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}Std. Pitch Correction  = [!PITCHCOR_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}Cachefile              = [!CACHEFILE_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}Logfile                = [!LOGFILE_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}LPCM Container         = [{0A}!LPCMCont!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Standard Loudness      = [{0A}!SHOWAMP!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Short Filenames        = [!SHORTFILENAMES_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Std. Pitch Correction  = [!PITCHCOR_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Cachefile              = [!CACHEFILE_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Logfile                = [!LOGFILE_TEXT!{%_YELLOW%}]{#}{\n}
 %WHITE%
 echo.
 echo == OPTIONS MENU =======================================================================================================================================================================================
@@ -258,7 +259,7 @@ echo 3. Create Shell Extensions
 echo 4. Delete Shell Extensions
 echo 5. Custom Shell Extensions
 echo.
-!Cecho! {%HC_WHITE%}6. DESIGN [{%HC_YELLOW%}!DESIGN_STRING!{%HC_WHITE%}]{#}{\n}
+"!Cecho!" {%HC_WHITE%}6. DESIGN [{%HC_YELLOW%}!DESIGN_STRING!{%HC_WHITE%}]{#}{\n}
 echo.
 %HCGREEN%
 echo D. SET DEFAULT SETTINGS
@@ -266,7 +267,7 @@ echo S. SAVE SETTINGS
 echo E. EXIT
 echo.
 %HCWHITE%
-!Cecho! {%HC_WHITE%}Change Settings and Press [{%HC_GREEN%}S{%HC_WHITE%}]AVE, [{%HC_GREEN%}D{%HC_WHITE%}]EFAULT or [{%HC_GREEN%}E{%HC_WHITE%}]XIT.{#}{\n}
+"!Cecho!" {%HC_WHITE%}Change Settings and Press [{%HC_GREEN%}S{%HC_WHITE%}]AVE, [{%HC_GREEN%}D{%HC_WHITE%}]EFAULT or [{%HC_GREEN%}E{%HC_WHITE%}]XIT.{#}{\n}
 CHOICE /C OTRL123456DSE /N /M "Select a Letter O,T,R,L,1,2,3,4,5,6,[D]EFAULT,[S]AVE,[E]XIT"
 if errorlevel 13 goto :EXIT
 if errorlevel 12 (
@@ -359,7 +360,7 @@ if errorlevel 10 (
 	echo.
 	%HCWHITE%
 	echo.
-	!Cecho! {%HC_WHITE%}Drag 'n' Drop {%_GREEN%}DESIGN File {%HC_WHITE%}here and press ENTER:{#}{\n}
+	"!Cecho!" {%HC_WHITE%}Drag 'n' Drop {%_GREEN%}DESIGN File {%HC_WHITE%}here and press ENTER:{#}{\n}
 	%GREEN%
 	set /p "DESIGNINPUT=" || set "DESIGN=STANDARD"
 	if "!DESIGNINPUT!" NEQ "STANDARD" for %%f in (!DESIGNINPUT!) do set "DESIGN=%%~dpnxf">nul 2>&1
@@ -481,8 +482,8 @@ echo.
 echo == BITRATES ===========================================================================================================================================================================================
 echo.
 %YELLOW%
-!Cecho! {%_YELLOW%}WAV                    = !WAVBR_TEXT!-Bit / Auto Bitdepth [!WAVBRAUTO_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}FLAC                   = !FLACBR_TEXT!-Bit / Auto Bitdepth [!FLACBRAUTO_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}WAV                    = !WAVBR_TEXT!-Bit / Auto Bitdepth [!WAVBRAUTO_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}FLAC                   = !FLACBR_TEXT!-Bit / Auto Bitdepth [!FLACBRAUTO_TEXT!{%_YELLOW%}]{#}{\n}
 echo THD Atmos              = !THDBR!-Bit
 echo AC-3                   = !AC3BR! k^/bs
 echo eAC-3                  = !eAC3BR! k^/bs
@@ -504,7 +505,7 @@ echo S. SAVE SETTINGS AND EXIT
 echo E. EXIT WITHOUT SAVING
 echo.
 %HCWHITE%
-!Cecho! {%HC_WHITE%}Change Settings and Press [{%HC_GREEN%}S{%HC_WHITE%}]AVE or [{%HC_GREEN%}E{%HC_WHITE%}]XIT WITHOUT SAVE.{#}{\n}
+"!Cecho!" {%HC_WHITE%}Change Settings and Press [{%HC_GREEN%}S{%HC_WHITE%}]AVE or [{%HC_GREEN%}E{%HC_WHITE%}]XIT WITHOUT SAVE.{#}{\n}
 CHOICE /C 123456SE /N /M "Select a Letter 1,2,3,4,5,6,[S]AVE,[E]XIT"
 
 if errorlevel 8 (
@@ -643,36 +644,36 @@ echo.
 echo == MISC ===============================================================================================================================================================================================
 echo.
 %YELLOW%
-!Cecho! {%_YELLOW%}Dolby Atmos Demuxing   = [!DAD_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}Dolby Atmos Priority   = [!DAP_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Dolby Atmos Demuxing   = [!DAD_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Dolby Atmos Priority   = [!DAP_TEXT!{%_YELLOW%}]{#}{\n}
 echo Dolby Atmos Nameset    = !A_NAMESET!
-!Cecho! {%_YELLOW%}LPCM Container         = [{0A}!LPCMCont!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}Standard Loudness      = [{0A}!SHOWAMP!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}Short Filenames        = [!SHORTFILENAMES_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}Std. Pitch Correction  = [!PITCHCOR_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}Cachefile              = [!CACHEFILE_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}Logfile                = [!LOGFILE_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}LPCM Container         = [{0A}!LPCMCont!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Standard Loudness      = [{0A}!SHOWAMP!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Short Filenames        = [!SHORTFILENAMES_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Std. Pitch Correction  = [!PITCHCOR_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Cachefile              = [!CACHEFILE_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}Logfile                = [!LOGFILE_TEXT!{%_YELLOW%}]{#}{\n}
 %WHITE%
 echo.
 echo == MISC MENU ==========================================================================================================================================================================================
 echo.
 %YELLOW%
-!Cecho! {%_YELLOW%}1. Enable / Disable Dolby Atmos Demuxing [!DAD_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}2. Enable / Disable Dolby Atmos Priority [!DAP_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}1. Enable / Disable Dolby Atmos Demuxing [!DAD_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}2. Enable / Disable Dolby Atmos Priority [!DAP_TEXT!{%_YELLOW%}]{#}{\n}
 echo 3. Set Dolby Atmos Nameset
-!Cecho! {%_YELLOW%}4. LPCM Container                        [{0A}!LPCMCont!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}5. Standard Loudness                     [{0A}!SHOWAMP!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}6. Enable / Disable Short Filenames      [!SHORTFILENAMES_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}7. Std. Pitch Correction                 [!PITCHCOR_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}8. Enable / Disable Cachefile            [!CACHEFILE_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}9. Enable / Disable Logfile              [!LOGFILE_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}4. LPCM Container                        [{0A}!LPCMCont!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}5. Standard Loudness                     [{0A}!SHOWAMP!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}6. Enable / Disable Short Filenames      [!SHORTFILENAMES_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}7. Std. Pitch Correction                 [!PITCHCOR_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}8. Enable / Disable Cachefile            [!CACHEFILE_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}9. Enable / Disable Logfile              [!LOGFILE_TEXT!{%_YELLOW%}]{#}{\n}
 echo.
 %HCGREEN%
 echo S. SAVE SETTINGS AND EXIT
 echo E. EXIT WITHOUT SAVING
 echo.
 %HCWHITE%
-!Cecho! {%HC_WHITE%}Change Settings and Press [{%HC_GREEN%}S{%HC_WHITE%}]AVE or [{%HC_GREEN%}E{%HC_WHITE%}]XIT WITHOUT SAVE.{#}{\n}
+"!Cecho!" {%HC_WHITE%}Change Settings and Press [{%HC_GREEN%}S{%HC_WHITE%}]AVE or [{%HC_GREEN%}E{%HC_WHITE%}]XIT WITHOUT SAVE.{#}{\n}
 CHOICE /C 123456789SE /N /M "Select a Letter 1,2,3,4,5,6,7,8,9,[S]AVE,[E]XIT"
 
 if errorlevel 11 (
@@ -773,8 +774,6 @@ if errorlevel 1 (
 goto :MISC_MENU
 
 :CUSTOM_SHELL_EXTENSION_MENU
-set PasswordChars=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890
-set PasswordLength=5
 call :CreatePassword Password
 cls
 if "!USR_SE_ORDER!"=="NONE" (
@@ -817,7 +816,7 @@ echo Here you can add a predefined Shell Extionsion for FSAC. Simply use Switche
 echo You can use this profile via Right Click on a valid file.
 %HCWHITE%%
 echo.
-!Cecho! {%HC_GREEN%}AVAILABLE SWITCHES:{#}{\n}
+"!Cecho!" {%HC_GREEN%}AVAILABLE SWITCHES:{#}{\n}
 echo --INDEX-^<Index Number^>                               Set Index if container is sourcefile.
 %HCYELLOW%
 echo --DRC-^<ON^|OFF^>                                       Set Dynamic Range Compression On or Off.
@@ -844,15 +843,15 @@ echo           ^<DIALNORM^|NORMALIZE^>                       DIALNORM sets audio
 %HCYELLOW%
 echo --DIR-^<Path to output directory^>                     Set output directory without "".
 echo.
-!Cecho! {%HC_YELLOW%}For unused switches the tool uses standard settings.{#}{\n}
+"!Cecho!" {%HC_YELLOW%}For unused switches the tool uses standard settings.{#}{\n}
 %WHITE%
 echo.
 echo == MENU ===============================================================================================================================================================================================
 %YELLOW%
 echo.
-!Cecho! {%_YELLOW%}1. Set Order [{!ORDERCOLOR!}!USR_SE_ORDER!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}2. Set Switches [{!SWITCHCOLOR!}!USR_SE_SWITCHES!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}3. Set Name [{!NAMECOLOR!}!USR_SE_NAME!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}1. Set Order [{!ORDERCOLOR!}!USR_SE_ORDER!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}2. Set Switches [{!SWITCHCOLOR!}!USR_SE_SWITCHES!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}3. Set Name [{!NAMECOLOR!}!USR_SE_NAME!{%_YELLOW%}]{#}{\n}
 echo.
 %HCGREEN%
 echo S. Save User Shell Extension
@@ -861,11 +860,11 @@ echo.
 echo E. Exit Menu
 echo.
 if "!SWITCHOK!!NAMEOK!" NEQ "TRUETRUE" (
-	!Cecho! {%HC_YELLOW%}Fix {!SWITCHCOLOR!}Switches {%HC_YELLOW%}and / or {!NAMECOLOR!}Name {%HC_YELLOW%}entries^^! You cannot save yet.{#}{\n}
+	"!Cecho!" {%HC_YELLOW%}Fix {!SWITCHCOLOR!}Switches {%HC_YELLOW%}and / or {!NAMECOLOR!}Name {%HC_YELLOW%}entries^^! You cannot save yet.{#}{\n}
 	echo.
 )
 %HCWHITE%
-!Cecho! {%HC_WHITE%}Change Settings and Press [{%HC_GREEN%}S{%HC_WHITE%}]AVE, [{%HC_GREEN%}D{%HC_WHITE%}]ELETE or [{%HC_GREEN%}E{%HC_WHITE%}]XIT WITHOUT SAVE.{#}{\n}
+"!Cecho!" {%HC_WHITE%}Change Settings and Press [{%HC_GREEN%}S{%HC_WHITE%}]AVE, [{%HC_GREEN%}D{%HC_WHITE%}]ELETE or [{%HC_GREEN%}E{%HC_WHITE%}]XIT WITHOUT SAVE.{#}{\n}
 CHOICE /C 123SDE /N /M "Select a Letter 1,2,[S]AVE,[D]ELETE,[E]XIT"
 if errorlevel 6 goto :MAINMENU
 if errorlevel 5 (
@@ -888,7 +887,7 @@ if errorlevel 5 (
 if errorlevel 4 (
 	if "!SWITCHOK!!NAMEOK!" NEQ "TRUETRUE" (
 		echo.
-		!Cecho! {%HC_YELLOW%}Fix {!SWITCHCOLOR!}Switches {%HC_YELLOW%}and / or {!NAMECOLOR!}Name {%HC_YELLOW%}entries^^! You cannot save yet.{#}{\n}
+		"!Cecho!" {%HC_YELLOW%}Fix {!SWITCHCOLOR!}Switches {%HC_YELLOW%}and / or {!NAMECOLOR!}Name {%HC_YELLOW%}entries^^! You cannot save yet.{#}{\n}
 	) else (
 		reg add "HKCR\*\Shell\MenuFSAUDIOCUSTOMCONVERTER" /ve /d "FS Audio Converter (Profiles)" /f>nul 2>&1
 		reg add "HKCR\*\Shell\MenuFSAUDIOCUSTOMCONVERTER" /v "Icon" /t REG_SZ /d "\"%~dp0tools\FSAC.ico\",0" /f>nul 2>&1
@@ -916,24 +915,24 @@ if errorlevel 4 (
 )
 if errorlevel 3 (
 	echo.
-	!Cecho! {%HC_WHITE%}Set Name. This is the Name in the FSAC Shell Extension Menu. Hit ENTER without Entry set Name to NONE.{#}{\n}
-	!Cecho! {%HC_WHITE%}Example Name: {%HC_YELLOW%}Convert to FLAC [Tempo Change 25 to 24]...{#}{\n}
+	"!Cecho!" {%HC_WHITE%}Set Name. This is the Name in the FSAC Shell Extension Menu. Hit ENTER without Entry set Name to NONE.{#}{\n}
+	"!Cecho!" {%HC_WHITE%}Example Name: {%HC_YELLOW%}Convert to FLAC [Tempo Change 25 to 24]...{#}{\n}
 	echo.
 	%HCWHITE%
 	set /p "USR_SE_NAME=Type in Name and press [ENTER]:" || SET "USR_SE_NAME=NONE"
 )
 if errorlevel 2 (
 	echo.
-	!Cecho! {%HC_WHITE%}Set Switches. Check {%HC_GREEN%}AVAILABLE SWITCHES{%HC_WHITE%}. Hit ENTER without Entry set Switches to NONE.{#}{\n}
-	!Cecho! {%HC_WHITE%}Example Line: {%HC_YELLOW%}--tempo-25to24 --codec-flac --dir-C:\Output{#}{\n}
+	"!Cecho!" {%HC_WHITE%}Set Switches. Check {%HC_GREEN%}AVAILABLE SWITCHES{%HC_WHITE%}. Hit ENTER without Entry set Switches to NONE.{#}{\n}
+	"!Cecho!" {%HC_WHITE%}Example Line: {%HC_YELLOW%}--tempo-25to24 --codec-flac --dir-C:\Output{#}{\n}
 	echo.
 	%HCWHITE%
 	set /p "USR_SE_SWITCHES=Type in Switches and press [ENTER]:" || SET "USR_SE_SWITCHES=NONE"
 )
 if errorlevel 1 (
 	echo.
-	!Cecho! {%HC_WHITE%}Set Order. Entries {%HC_YELLOW%}will not be ordered by Name{%HC_WHITE%}. You must use your own Order system.{#}{\n}
-	!Cecho! {%HC_WHITE%}Example Orders: First Script set Order to {%HC_YELLOW%}01{%HC_WHITE%}, second to {%HC_YELLOW%}02{%HC_WHITE%}, third to {%HC_YELLOW%}03{%HC_WHITE%}...{#}{\n}
+	"!Cecho!" {%HC_WHITE%}Set Order. Entries {%HC_YELLOW%}will not be ordered by Name{%HC_WHITE%}. You must use your own Order system.{#}{\n}
+	"!Cecho!" {%HC_WHITE%}Example Orders: First Script set Order to {%HC_YELLOW%}01{%HC_WHITE%}, second to {%HC_YELLOW%}02{%HC_WHITE%}, third to {%HC_YELLOW%}03{%HC_WHITE%}...{#}{\n}
 	echo.
 	%HCWHITE%
 	set /p "USR_SE_ORDER=Type in Order-Code and press [ENTER]:" || SET "USR_SE_ORDER=NONE"

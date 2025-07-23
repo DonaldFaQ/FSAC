@@ -15,7 +15,7 @@ call :CreatePassword Password
 setlocal EnableDelayedExpansion
 
 ::Change to your liking
-set "Cecho="%~dp0tools\cecho_x64.exe""
+set "Cecho=%~dp0tools\cecho_x64.exe"
 set "sfkpath=%~dp0tools\sfk.exe"
 set "eac3topath=%~dp0tools\eac3to.exe"
 set "FFMPEGpath=%~dp0tools\ffmpeg.exe"
@@ -55,7 +55,7 @@ set "MONOWAVSLAYOUT=Standard"
 set "CONTTRUE=FALSE"
 set "THDAC3=FALSE"
 set "PCM_10CHANNEL=FALSE"
-set "TRACK=2"
+set "TRACK="
 set "DRC=OFF"
 set "DRC_SCALE="
 set "PITCHCOR=TRUE"
@@ -251,7 +251,6 @@ set "OPTIONS=NO"
 ::include Switches
 if "%~2%~3%~4%~5%~6%~7%~8%~9" NEQ "" (
 	set "AUTOMODE=ON"
-	set "TRACK=-1"
 	(
 	echo %~2
 	echo %~3
@@ -400,14 +399,15 @@ echo !FLACBR!|findstr /I "AUTO">nul 2>&1 && set "FLACBRAUTO=TRUE"
 set "FLACBR_TEXT=!FLACBR:~,2!"
 
 ::CHECK SUPPORTED CONTAINER
-if /i "!SOURCEFILEEXT!"==".mkv" set "CONTTRUE=TRUE"
-if /i "!SOURCEFILEEXT!"==".mka" set "CONTTRUE=TRUE" & set "TRACK=1"
-if /i "!SOURCEFILEEXT!"==".avi" set "CONTTRUE=TRUE"
-if /i "!SOURCEFILEEXT!"==".evo" set "CONTTRUE=TRUE"
-if /i "!SOURCEFILEEXT!"==".vob" set "CONTTRUE=TRUE"
-if /i "!SOURCEFILEEXT!"==".m2ts" set "CONTTRUE=TRUE"
-if /i "!SOURCEFILEEXT!"==".ts" set "CONTTRUE=TRUE"
-if /i "!SOURCEFILEEXT!"==".thd+ac3" set "THDAC3=TRUE"
+if /i "!SOURCEFILEEXT!"==".mkv" set "CONTTRUE=TRUE" & if "!TRACK!"=="" set "TRACK=2"
+if /i "!SOURCEFILEEXT!"==".mka" set "CONTTRUE=TRUE" & if "!TRACK!"=="" set "TRACK=1"
+if /i "!SOURCEFILEEXT!"==".avi" set "CONTTRUE=TRUE" & if "!TRACK!"=="" set "TRACK=2"
+if /i "!SOURCEFILEEXT!"==".evo" set "CONTTRUE=TRUE" & if "!TRACK!"=="" set "TRACK=2"
+if /i "!SOURCEFILEEXT!"==".vob" set "CONTTRUE=TRUE" & if "!TRACK!"=="" set "TRACK=2"
+if /i "!SOURCEFILEEXT!"==".m2ts" set "CONTTRUE=TRUE" & if "!TRACK!"=="" set "TRACK=2"
+if /i "!SOURCEFILEEXT!"==".ts" set "CONTTRUE=TRUE" & if "!TRACK!"=="" set "TRACK=2"
+if /i "!SOURCEFILEEXT!"==".thd+ac3" set "THDAC3=TRUE" & if "!TRACK!"=="" set "TRACK=-1"
+if "!TRACK!"=="" set "TRACK=-1"
 
 :: CHECK INPUT FILE
 if "!CONTTRUE!"=="TRUE" (
@@ -552,9 +552,9 @@ echo.
 %WHITE%
 echo INFORMATION:
 echo.
-!Cecho! {%_YELLOW%}AVISYNTH FRAMESERVER     : [!AS_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}DOLBY REFERENCE PLAYER   : [!DRP_CTEXT!{%_YELLOW%}], DOLBY ATMOS DEMUXING : [!DAD_TEXT!{%_YELLOW%}], DOLBY ATMOS PRIORITY : [!DAP_TEXT!{%_YELLOW%}]{#}{\n}
-!Cecho! {%_YELLOW%}PCM BITDEPTH AUTO DETECT : [!WAVBRAUTO_TEXT!{%_YELLOW%}], FLAC BITDEPTH AUTO DETECT : [!WAVBRAUTO_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}AVISYNTH FRAMESERVER     : [!AS_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}DOLBY REFERENCE PLAYER   : [!DRP_CTEXT!{%_YELLOW%}], DOLBY ATMOS DEMUXING : [!DAD_TEXT!{%_YELLOW%}], DOLBY ATMOS PRIORITY : [!DAP_TEXT!{%_YELLOW%}]{#}{\n}
+"!Cecho!" {%_YELLOW%}PCM BITDEPTH AUTO DETECT : [!WAVBRAUTO_TEXT!{%_YELLOW%}], FLAC BITDEPTH AUTO DETECT : [!WAVBRAUTO_TEXT!{%_YELLOW%}]{#}{\n}
 echo.
 
 echo SOURCE INFORMATION:
@@ -777,7 +777,7 @@ if "%CONTTRUE%"=="TRUE" (
 	echo    !TARGET_FOLDER_STRING!
 	echo.
 	%YELLOW%
-	!Cecho! {%_YELLOW%}1. Stream              : %TRACK% [!TRACKCHECK_TEXT!{%_YELLOW%}]{#}{\n}
+	"!Cecho!" {%_YELLOW%}1. Stream              : %TRACK% [!TRACKCHECK_TEXT!{%_YELLOW%}]{#}{\n}
 	echo 2. DRC                 : %DRC%
 	echo 3. Codec               : %codec_out_NAME%%SHOWBD% [%BITRATE_NAME%]
 	if "!ATMOSFILE!"=="TRUE" (
@@ -809,7 +809,7 @@ if "%CONTTRUE%"=="TRUE" (
 	echo O. Options
 	echo.
 	%HCWHITE%
-	!Cecho! {%HC_WHITE%}Change Settings and press [{%_GREEN%}M{%HC_WHITE%}] to start Muxing^!{#}{\n}
+	"!Cecho!" {%HC_WHITE%}Change Settings and press [{%_GREEN%}M{%HC_WHITE%}] to start Muxing^!{#}{\n}
 	if "!ATMOSFILE!"=="TRUE" (
 		CHOICE /C 123456789MSDO /N /M "Select a Letter 1,2,3,4,5,6,7,8,9,[M]ux,[S]ave,[D]efault,[O]ptions"
 	) else (
@@ -1111,7 +1111,7 @@ if "%CONTTRUE%"=="TRUE" (
 	echo O. Options
 	echo.
 	%HCWHITE%
-	!Cecho! {%HC_WHITE%}Change Settings and press [{%_GREEN%}M{%HC_WHITE%}] to start Muxing^!{#}{\n}
+	"!Cecho!" {%HC_WHITE%}Change Settings and press [{%_GREEN%}M{%HC_WHITE%}] to start Muxing^!{#}{\n}
 	if "!ATMOS_OPT!"=="TRUE" (
 		CHOICE /C 123456789MSDO /N /M "Select a Letter 1,2,3,4,5,6,7,8,9,[M]ux,[S]ave,[D]efault,[O]ptions"
 	) else (
@@ -1403,7 +1403,7 @@ echo.
 echo    Output Folder:
 echo    !TARGET_FOLDER_STRING!
 echo.
-if "%CONTTRUE%"=="TRUE" !Cecho! {%_CYAN%}Stream              : %TRACK% [!TRACKCHECK_TEXT!{%_CYAN%}]{#}{\n}
+if "%CONTTRUE%"=="TRUE" "!Cecho!" {%_YELLOW%}Stream              : %TRACK% [!TRACKCHECK_TEXT!{%_YELLOW%}]{#}{\n}
 echo DRC                 : %DRC%
 echo Codec               : %codec_out_NAME%%SHOWBD% [%BITRATE_NAME%]
 echo Channel Layout      : !C_LAYOUT!
@@ -2241,10 +2241,10 @@ echo FS Audio Converter is a FrameServer based CLI Tool for audio encoding.
 echo You need an installed Avisynth+ Frameserver for using this tool.
 echo Encoding engine is FFMPEG (for Atmos files Dolby Reference Player + FFMPEG). 
 echo.
-!Cecho! {%HC_GREEN%}USAGE:{#}{\n}
+"!Cecho!" {%HC_GREEN%}USAGE:{#}{\n}
 echo     %~n0 "<SOURCEFILE>" [OPTIONAL ^<SWITCHES^>]
 echo.
-!Cecho! {%HC_GREEN%}SWITCHES:{#}{\n}
+"!Cecho!" {%HC_GREEN%}SWITCHES:{#}{\n}
 echo --INDEX-^<Index Number^>            Set Index if container is sourcefile.
 %HCYELLOW%
 echo --DRC-^<ON^|OFF^>                    Set Dynamic Range Compression On or Off.
@@ -2271,14 +2271,14 @@ echo           ^<DIALNORM^|NORMALIZE^>         DIALNORM sets audio amplify to -3
 %HCYELLOW%
 echo --DIR-^<Path to output directory^>  Set output directory without "".
 echo.
-!Cecho! {%HC_GREEN%}EXAMPLES:{#}{\n}
-!Cecho! {%HC_WHITE%}%~n0 "C:\MyMovie.mkv" {%HC_YELLOW%}Open file with CLI Gui{#}{\n}
+"!Cecho!" {%HC_GREEN%}EXAMPLES:{#}{\n}
+"!Cecho!" {%HC_WHITE%}%~n0 "C:\MyMovie.mkv" {%HC_YELLOW%}Open file with CLI Gui{#}{\n}
 %HCWHITE%
 echo %~n0 "C:\MyMovie.mkv" --index-3 --tempo-25to24 --amplify-dialnorm
 echo %~n0 "C:\MyMovie.mkv" --index-3 --delay--10 --codec-monopcm --dir-C:\Output
 echo %~n0 "C:\MyMovie.mkv" --index-2 --DRC-off --codec-flac --dir-C:\Output
 echo.
-!Cecho! {%HC_YELLOW%}For unused switches the tool uses standard settings.{#}{\n}
+"!Cecho!" {%HC_YELLOW%}For unused switches the tool uses standard settings.{#}{\n}
 echo.
 cmd.exe /s /k
 exit

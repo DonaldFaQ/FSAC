@@ -1,4 +1,12 @@
-FS Audio Converter [Team QfG] v0.70c beta
+FS Audio Converter [Team QfG] v0.71.1 beta
+
+v0.71.1
+- Minor Bugfixes.
+
+v0.71
+- New color management with theme support.
+- Add option to set user Profiles in Shell Extensions.
+- Updated L-Smash Works to v.1266.0.0.0
 
 v0.70c
 - Major Bugfixes.
