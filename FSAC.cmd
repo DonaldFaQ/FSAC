@@ -1644,14 +1644,15 @@ if "!THDAC3!"=="TRUE" (
 ) else (
 	echo LWLibavAudioSource^("!SOURCEFILE!", %DRC_SCALE%!CACHING!, stream_index=%TRACK%^)>>"!AVSFILE!"
 )
-if "%codec_out_NAME%"=="FLAC" (
-	echo # [Force Bitdepth to !FLACBR_TEXT!-Bit]>>"!AVSFILE!"
-	echo ConvertAudioTo!FLACBR_TEXT!bit^(^)>>"!AVSFILE!"
-)
 if "%SAMPLE_RATE%" NEQ "ORIGINAL" call :AVSCRIPT_SAMPLERATE
 if "%DELAY%" NEQ "0" call :AVSCRIPT_DELAY
 if "%AMPLIFY%" NEQ "0" call :AVSCRIPT_AMPLIFY
 if "!TIMESTRETCH!" EQU "YES" call :AVSCRIPT_TIMESTRETCH
+
+if "%codec_out_NAME%"=="FLAC" (
+	echo # [Force Bitdepth to !FLACBR_TEXT!-Bit]>>"!AVSFILE!"
+	echo ConvertAudioTo!FLACBR_TEXT!bit^(^)>>"!AVSFILE!"
+)
 
 if "%LOGFILE%"=="TRUE" (
 	for /f "usebackq delims=" %%i in ("!AVSFILE!") do echo %%i>>"!OUTPUTFILE!.FSAC_%DateStart%_%TimeFile%.log"
