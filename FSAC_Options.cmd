@@ -1,6 +1,6 @@
 @echo off & setlocal
 mode con cols=200lines=65
-set VERSION=0.71.1 "Innocence proves nothing" beta
+set VERSION=0.71.1b "Innocence proves nothing" beta
 set HEADER1=powered by Avisynth / FFMPEG                                                               GNU License (GPL) 2021-2025
 set HEADER2=powered by Avisynth / FFMPEG                                                                                                                                                GNU License (GPL) 2021-2025
 TITLE FS Audio Converter OPTIONS [Team QfG] v%VERSION%
@@ -382,7 +382,7 @@ if errorlevel 8 (
 		set "NewLine=[System.Environment]::NewLine"
 		set "Line1=REGISTRY STRINGS NOT DELETED^!"
 		set "Line2=Start the script with ADMINISTRATOR permissions to activate/deactivate the Windows SHELL EXTENSIONS. Without ADMINISTRATOR permissions you have insufficent rights changing Windows registry^!"
-		START /MIN PowerShell -WindowStyle Hidden -Command "Add-Type -AssemblyName PresentationFramework;[System.Windows.MessageBox]::Show('!Line1!' + !NewLine! + !NewLine! + '!Line2!', 'DDVT OPTIONS [QfG] %VERSION%', 'Ok','Error')"	
+		START /MIN PowerShell -WindowStyle Hidden -Command "Add-Type -AssemblyName PresentationFramework;[System.Windows.MessageBox]::Show('!Line1!' + !NewLine! + !NewLine! + '!Line2!', 'FSAC OPTIONS [QfG] %VERSION%', 'Ok','Error')"	
 	)
 	TIMEOUT 1 >nul
 )
@@ -415,7 +415,7 @@ if errorlevel 7 (
 		set "NewLine=[System.Environment]::NewLine"
 		set "Line1=REGISTRY STRINGS NOT SET^!"
 		set "Line2=Start the script with ADMINISTRATOR permissions to activate/deactivate the Windows SHELL EXTENSIONS. Without ADMINISTRATOR permissions you have insufficent rights changing Windows registry^!"
-		START /MIN PowerShell -WindowStyle Hidden -Command "Add-Type -AssemblyName PresentationFramework;[System.Windows.MessageBox]::Show('!Line1!' + !NewLine! + !NewLine! + '!Line2!', 'DDVT OPTIONS [QfG] %VERSION%', 'Ok','Error')"	
+		START /MIN PowerShell -WindowStyle Hidden -Command "Add-Type -AssemblyName PresentationFramework;[System.Windows.MessageBox]::Show('!Line1!' + !NewLine! + !NewLine! + '!Line2!', 'FSAC OPTIONS [QfG] %VERSION%', 'Ok','Error')"	
 	)
 	TIMEOUT 1 >nul
 )
@@ -836,11 +836,14 @@ echo --CODEC-^<Audio Codec^>                                Set one of the follo
 echo         ^<LPCM^|MONOWAVs^|FLAC^|AC3^|EAC3^|AAC^>            Available output audio codecs.
 echo         ^<ATMOS-LPCM^|ATMOS-MONOWAVs^>                  Dolby Atmos Codecs. Needed installed Dolby Reference Player
 %HCYELLOW%
-echo --DELAY-^<Delay in ms^>                                Set delay for audio track. for negative delay use -.
+echo --SAMPLERATE-^<Sample Rate^>                           Sample Rate in Hertz.
+echo         ^<48000^|44100^|ORIGINAL^>                       Available Sample Rates.
 %HCWHITE%
+echo --DELAY-^<Delay in ms^>                                Set delay for audio track. for negative delay use -.
+%HCYELLOW%
 echo --AMPLIFY-^<AMPLIFY in dB^>                            Set amplify. for negative amplify use -. Also available switches:
 echo           ^<DIALNORM^|NORMALIZE^>                       DIALNORM sets audio amplify to -31dB, NORMALIZE sets highest peak to -0dB
-%HCYELLOW%
+%HCWHITE%
 echo --DIR-^<Path to output directory^>                     Set output directory without "".
 echo.
 "!Cecho!" {%HC_YELLOW%}For unused switches the tool uses standard settings.{#}{\n}
@@ -880,7 +883,7 @@ if errorlevel 5 (
 		set "NewLine=[System.Environment]::NewLine"
 		set "Line1=REGISTRY STRINGS NOT DELETED^!"
 		set "Line2=Start the script with ADMINISTRATOR permissions to activate/deactivate the Windows SHELL EXTENSIONS. Without ADMINISTRATOR permissions you have insufficent rights changing Windows registry^!"
-		START /MIN PowerShell -WindowStyle Hidden -Command "Add-Type -AssemblyName PresentationFramework;[System.Windows.MessageBox]::Show('!Line1!' + !NewLine! + !NewLine! + '!Line2!', 'DDVT OPTIONS [QfG] %VERSION%', 'Ok','Error')"	
+		START /MIN PowerShell -WindowStyle Hidden -Command "Add-Type -AssemblyName PresentationFramework;[System.Windows.MessageBox]::Show('!Line1!' + !NewLine! + !NewLine! + '!Line2!', 'FSAC OPTIONS [QfG] %VERSION%', 'Ok','Error')"	
 	)
 	TIMEOUT 1 >nul
 )
@@ -908,7 +911,7 @@ if errorlevel 4 (
 			set "NewLine=[System.Environment]::NewLine"
 			set "Line1=REGISTRY STRINGS NOT SET^!"
 			set "Line2=Start the script with ADMINISTRATOR permissions to activate/deactivate the Windows SHELL EXTENSIONS. Without ADMINISTRATOR permissions you have insufficent rights changing Windows registry^!"
-			START /MIN PowerShell -WindowStyle Hidden -Command "Add-Type -AssemblyName PresentationFramework;[System.Windows.MessageBox]::Show('!Line1!' + !NewLine! + !NewLine! + '!Line2!', 'DDVT OPTIONS [QfG] %VERSION%', 'Ok','Error')"	
+			START /MIN PowerShell -WindowStyle Hidden -Command "Add-Type -AssemblyName PresentationFramework;[System.Windows.MessageBox]::Show('!Line1!' + !NewLine! + !NewLine! + '!Line2!', 'FSAC OPTIONS [QfG] %VERSION%', 'Ok','Error')"	
 		)
 	)
 	TIMEOUT 1 >nul
