@@ -365,6 +365,11 @@ if "%~2%~3%~4%~5%~6%~7%~8%~9" NEQ "" (
 		if /i "!CODEC!"=="AAC" set "codec_out_NAME=AAC"
 	)
 
+	for /F "delims=" %%A IN ('findstr /I /C:"--SAMPLERATE" "%TMP%\%Password%.txt"') DO (
+		set "SAMPLE_RATE=%%A"
+		set "SAMPLE_RATE=!SAMPLE_RATE:~13!"
+	)
+	
 	for /F "delims=" %%A IN ('findstr /I /C:"--DELAY" "%TMP%\%Password%.txt"') DO (
 		set "DELAY=%%A"
 		set "DELAY=!DELAY:~8!"
@@ -750,8 +755,8 @@ if "%codec_out_NAME%"=="AAC" set "BITRATE_NAME=VBR QL %AACBR%"
 :: SET SAMPLE RATE STRINGS
 set "SAMPLE_RATE_NAME=Hz"
 if "%SAMPLE_RATE%"=="ORIGINAL" set "SAMPLE_RATE_NAME="
-if "%SAMPLE_RATE%"=="48000" set "SAMPLE_RATE_NAME=Hz ^[BluRay ^/ DVD^]"
-if "%SAMPLE_RATE%"=="44100" set "SAMPLE_RATE_NAME=Hz ^[CD^]"
+if "%SAMPLE_RATE%"=="48000" set "SAMPLE_RATE_NAME=Hz [BluRay / DVD]"
+if "%SAMPLE_RATE%"=="44100" set "SAMPLE_RATE_NAME=Hz [CD]"
 
 :: IF ATMOS_OPT IS SET BUT NO ATMOS FILE
 if "!ATMOSFILE!%codec_out_NAME%"=="FALSEMono WAVs [ATMOS]" set "codec_out_NAME=FLAC"
@@ -1674,7 +1679,7 @@ if exist "!AVSFILE!" (
 goto :ENCODING
 
 :AVSCRIPT_SAMPLERATE
-echo # [DSP: Convert Sample Rate - !SAMPLE_RATE! SAMPLE_RATE_NAME]>>"!AVSFILE!"
+echo # [DSP: Convert Sample Rate - !SAMPLE_RATE! !SAMPLE_RATE_NAME!]>>"!AVSFILE!"
 echo ConvertAudioToFloat()>>"!AVSFILE!"
 echo SSRC(%SAMPLE_RATE%)>>"!AVSFILE!"
 goto :eof
@@ -1687,7 +1692,7 @@ goto :eof
 :AVSCRIPT_AMPLIFY
 echo # [DSP: Apply Amplify - !SHOWAMP!]>>"!AVSFILE!"
 if /i "!AMPLIFY!"=="NORMALIZE" (
-	echo Normalize^(0.9^)>>"!AVSFILE!"
+	echo Normalize^(0.99^)>>"!AVSFILE!"
 ) else (
 	echo AmplifyDB^(!AMPLIFY!^)>>"!AVSFILE!"
 )
@@ -2264,16 +2269,19 @@ echo --CODEC-^<Audio Codec^>             Set one of the following Audio Codecs.
 echo         ^<LPCM^|MONOWAVs^|FLAC^|AC3^|EAC3^|AAC^>      Available output audio codecs.
 echo         ^<ATMOS-LPCM^|ATMOS-MONOWAVs^>            Dolby Atmos Codecs. Needed installed Dolby Reference Player
 %HCYELLOW%
-echo --DELAY-^<Delay in ms^>             Set delay for audio track. for negative delay use -.
+echo --SAMPLERATE-^<Sample Rate^>        Sample Rate in Hertz.
+echo         ^<48000^|44100^|ORIGINAL^>       Available Sample Rates.
 %HCWHITE%
-echo --AMPLIFY-^<AMPLIFY in dB^>         Set amplify. for negative amplify use -. Also available switches:
-echo           ^<DIALNORM^|NORMALIZE^>         DIALNORM sets audio amplify to -31dB, NORMALIZE sets highest peak to -0dB
+echo --DELAY-^<Delay in ms^>             Set delay for audio track. for negative delay use -.
 %HCYELLOW%
+echo --AMPLIFY-^<AMPLIFY in dB^>         Set amplify. for negative amplify use -. Also available switches:
+echo           ^<DIALNORM^|NORMALIZE^>       DIALNORM sets audio amplify to -31dB, NORMALIZE sets highest peak to -0dB
+%HCWHITE%
 echo --DIR-^<Path to output directory^>  Set output directory without "".
 echo.
 "!Cecho!" {%HC_GREEN%}EXAMPLES:{#}{\n}
 "!Cecho!" {%HC_WHITE%}%~n0 "C:\MyMovie.mkv" {%HC_YELLOW%}Open file with CLI Gui{#}{\n}
-%HCWHITE%
+%HCYELLOW%
 echo %~n0 "C:\MyMovie.mkv" --index-3 --tempo-25to24 --amplify-dialnorm
 echo %~n0 "C:\MyMovie.mkv" --index-3 --delay--10 --codec-monopcm --dir-C:\Output
 echo %~n0 "C:\MyMovie.mkv" --index-2 --DRC-off --codec-flac --dir-C:\Output
